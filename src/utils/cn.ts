@@ -1,2 +1,4 @@
-export const cn = (...classes: (string | undefined | false | null)[]) =>
+type ClassValue = string | number | bigint | boolean | undefined | null
+
+export const cn = (...classes: ClassValue[]) =>
   classes.filter(Boolean).join(" ");
