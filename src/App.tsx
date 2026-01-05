@@ -1,12 +1,9 @@
 
 import './App.css'
+import { AppRoutes } from './routes/AppRoutes'
 
 function App() {
-  return (
-    <div className="min-h-screen flex items-center justify-center text-3xl font-bold text-green-600">
-      Tailwind v4 is working ✅
-    </div>
-  )
+  return <AppRoutes />
 }
 
 export default App

@@ -1,5 +1,11 @@
-import React from 'react'
+import { ProjectList } from '../features/projects/ProjectList'
 
-export const DashboardPage: React.FC = () => {
-  return <div>Dashboard placeholder</div>
+export function DashboardPage() {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto">
+        <ProjectList />
+      </div>
+    </div>
+  )
 }

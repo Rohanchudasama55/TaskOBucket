@@ -1,5 +1,34 @@
-import React from 'react'
+interface AvatarProps {
+  src?: string
+  alt?: string
+  size?: number
+  fallback?: string
+  className?: string
+}
 
-export const Avatar: React.FC<{ src?: string; alt?: string }> = ({ src, alt }) => (
-  <img src={src} alt={alt || 'avatar'} style={{ width: 32, height: 32, borderRadius: '50%' }} />
-)
+export function Avatar({ 
+  src, 
+  alt, 
+  size = 32, 
+  fallback,
+  className = ''
+}: AvatarProps) {
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    if (fallback) {
+      e.currentTarget.src = fallback
+    }
+  }
+
+  return (
+    <img 
+      src={src} 
+      alt={alt || 'User avatar'} 
+      onError={handleImageError}
+      className={`rounded-full object-cover ${className}`}
+      style={{ 
+        width: size, 
+        height: size
+      }} 
+    />
+  )
+}
