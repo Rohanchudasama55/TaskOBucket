@@ -1,5 +1,5 @@
 // Auth pages
-export { LoginPage, RegisterPage } from './auth';
+export { LoginPage, RegisterPage, ForgotPasswordPage, ResetPasswordPage } from './auth';
 export type { LoginFormData, RegisterFormData } from './auth';
 
 // Dashboard pages
