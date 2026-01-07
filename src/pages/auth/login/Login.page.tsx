@@ -1,14 +1,15 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { CheckCircle2, Eye, EyeOff } from 'lucide-react'
-import { AuthLayout } from '../../../layouts/AuthLayout'
 import { Input } from '../../../components/ui/Input'
 import { Button } from '../../../components/ui/Button'
 import { Alert } from '../../../components/ui/Alert'
 import { useLoginForm } from './Login.hooks'
+import { useAuthState } from '../../../hooks/useAuth'
 import { LOGIN_MESSAGES, LOGIN_PLACEHOLDERS } from './Login.constants'
 
 export function LoginPage() {
+  const { isAuthenticated, isLoading: authLoading } = useAuthState();
   const {
     formData,
     error,
@@ -19,8 +20,21 @@ export function LoginPage() {
   } = useLoginForm()
   const [showPassword, setShowPassword] = useState(false)
 
+  // Redirect if already authenticated
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (isAuthenticated) {
+    console.log('User already authenticated, redirecting to dashboard');
+    return <Navigate to="/dashboard" replace />;
+  }
+
   return (
-    <AuthLayout>
   <div className="fixed inset-0 overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50">
        <div className="flex h-full w-full items-center justify-center p-4">
          {/* Center Card */}
@@ -94,7 +108,7 @@ export function LoginPage() {
                        Password
                      </label>
                      <Link
-                       to="/forgot-password"
+                       to="/auth/forgot-password"
                        className="text-sm font-semibold text-blue-600 hover:underline"
                      >
                        {LOGIN_MESSAGES.forgotPassword}
@@ -136,7 +150,7 @@ export function LoginPage() {
                    <div className="flex-1 border-t border-gray-200" />
                  </div>
  
-                 {/* Google */}
+                 {/*
                  <a
                    href="/auth/google"
                    className="w-full flex items-center justify-center gap-3 rounded-xl border border-gray-200 py-3.5 hover:bg-gray-50 transition"
@@ -149,7 +163,7 @@ export function LoginPage() {
                    <span className="text-sm font-semibold text-gray-700">
                      {LOGIN_MESSAGES.signInWithGoogle}
                    </span>
-                 </a>
+                 </a> */}
                </div>
  
                <p className="mt-8 text-center text-sm text-gray-500">
@@ -166,6 +180,5 @@ export function LoginPage() {
          </div>
        </div>
      </div>
-    </AuthLayout>
   )
 }

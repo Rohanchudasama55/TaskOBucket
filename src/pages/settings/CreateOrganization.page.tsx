@@ -1,41 +1,18 @@
-import { useState, useEffect } from 'react'
 import { Input } from '../../components/ui/Input'
 import { Button } from '../../components/ui/Button'
+import { useCreateOrganization } from './CreateOrganization.hooks'
 
 export function CreateOrganizationPage() {
-  const [orgName, setOrgName] = useState('')
-  const [orgKey, setOrgKey] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-
-  // Auto-generate organization key from name
-  useEffect(() => {
-    const generateKey = (name: string) => {
-      return name
-        .toLowerCase()
-        .replace(/[^a-z0-9\s]/g, '')
-        .replace(/\s+/g, '-')
-        .substring(0, 20)
-    }
-    
-    if (orgName) {
-      setOrgKey(generateKey(orgName))
-    } else {
-      setOrgKey('')
-    }
-  }, [orgName])
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    
-    // Simulate API call
-    setTimeout(() => {
-      console.log('Organization created:', { orgName, orgKey })
-      setIsLoading(false)
-    }, 1000)
-  }
-
-  const previewUrl = orgKey ? `taskobucket.com/${orgKey}` : 'taskobucket.com/your-org'
+  const {
+    formData,
+    error,
+    success,
+    isLoading,
+    handleNameChange,
+    handleSubmit,
+    resetForm,
+    previewUrl
+  } = useCreateOrganization()
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 sm:px-6 lg:px-8">
@@ -55,11 +32,39 @@ export function CreateOrganizationPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Error Message */}
+            {error && (
+              <div className="p-4 bg-red-50 border border-red-200 rounded-xl">
+                <div className="flex">
+                  <svg className="w-5 h-5 text-red-400 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                  <div className="ml-3">
+                    <p className="text-sm text-red-800">{error}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Success Message */}
+            {success && (
+              <div className="p-4 bg-green-50 border border-green-200 rounded-xl">
+                <div className="flex">
+                  <svg className="w-5 h-5 text-green-400 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <div className="ml-3">
+                    <p className="text-sm text-green-800">{success}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <Input
               label="Organization Name"
               type="text"
-              value={orgName}
-              onChange={(e) => setOrgName(e.target.value)}
+              value={formData.name}
+              onChange={handleNameChange}
               placeholder="Enter your organization name"
               required
               leftIcon={
@@ -76,7 +81,7 @@ export function CreateOrganizationPage() {
               <div className="relative">
                 <input
                   type="text"
-                  value={orgKey}
+                  value={formData.organization_key}
                   disabled
                   className="block w-full rounded-xl border border-gray-300 px-4 py-3 text-sm bg-gray-50 text-gray-500 pr-10"
                 />
@@ -98,13 +103,14 @@ export function CreateOrganizationPage() {
                 type="button"
                 variant="ghost"
                 className="flex-1"
+                onClick={resetForm}
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 className="flex-1"
-                disabled={isLoading || !orgName.trim()}
+                disabled={isLoading || !formData.name.trim()}
               >
                 {isLoading ? 'Creating...' : 'Create Organization'}
               </Button>

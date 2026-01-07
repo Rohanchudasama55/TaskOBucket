@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { LOGIN_FORM_DEFAULTS, DEMO_CREDENTIALS, LOGIN_MESSAGES, LOGIN_SIMULATION_DELAY } from './Login.constants';
+import { useLogin } from '../../../hooks/useAuth';
+import { LOGIN_FORM_DEFAULTS } from './Login.constants';
 
 export interface LoginFormData {
   email: string;
@@ -22,34 +23,47 @@ export function useLoginForm(): UseLoginFormReturn {
     password: LOGIN_FORM_DEFAULTS.password
   });
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+
+  const loginMutation = useLogin();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({ ...prev, email: e.target.value }));
+    if (error) setError(''); // Clear error when user starts typing
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({ ...prev, password: e.target.value }));
+    if (error) setError(''); // Clear error when user starts typing
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     setError('');
     
-    // Simulate API call
-    return new Promise<void>((resolve) => {
-      setTimeout(() => {
-        if (formData.email === DEMO_CREDENTIALS.email && formData.password === DEMO_CREDENTIALS.password) {
-          // Success - redirect would happen here
-          console.log('Login successful');
-        } else {
-          setError(LOGIN_MESSAGES.invalidCredentials);
-        }
-        setIsLoading(false);
-        resolve();
-      }, LOGIN_SIMULATION_DELAY);
-    });
+    console.log('Login form submitted with:', { email: formData.email });
+    
+    // Basic validation
+    if (!formData.email || !formData.password) {
+      setError('Please fill in all fields');
+      return;
+    }
+
+    if (!formData.email.includes('@')) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
+    try {
+      console.log('Attempting login...');
+      const result = await loginMutation.mutateAsync({
+        email: formData.email,
+        password: formData.password
+      });
+      console.log('Login successful:', result);
+    } catch (err: any) {
+      console.error('Login error:', err);
+      setError(err.message || 'Login failed. Please try again.');
+    }
   };
 
   const clearError = () => {
@@ -59,7 +73,7 @@ export function useLoginForm(): UseLoginFormReturn {
   return {
     formData,
     error,
-    isLoading,
+    isLoading: loginMutation.isPending,
     handleEmailChange,
     handlePasswordChange,
     handleSubmit,
