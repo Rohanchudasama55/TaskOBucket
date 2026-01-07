@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import type { ReactNode } from "react"
 import { store } from "./store"
 import { ErrorBoundary } from "../components/common/ErrorBoundary"
+import { AuthProvider } from "../contexts/AuthContext"
 
 // Create QueryClient outside component to prevent recreation
 const queryClient = new QueryClient({
@@ -23,7 +24,9 @@ export function AppProviders({ children }: Props) {
     <ErrorBoundary>
       <Provider store={store}>
         <QueryClientProvider client={queryClient}>
-          {children}
+          <AuthProvider>
+            {children}
+          </AuthProvider>
         </QueryClientProvider>
       </Provider>
     </ErrorBoundary>
