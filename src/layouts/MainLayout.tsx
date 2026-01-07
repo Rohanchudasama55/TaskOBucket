@@ -1,11 +1,15 @@
 import { useState } from "react";
+import type { ReactNode } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Avatar } from "../components/Avatar";
+import { Avatar } from "../components/ui/Avatar";
 import { navItems } from "../utils/navItems";
-import { IoNotifications } from "react-icons/io5";
-import { Button } from "../components/Button";
+import { Button } from "../components/ui/Button";
 
-export function MainLayout() {
+interface MainLayoutProps {
+  children?: ReactNode;
+}
+
+export function MainLayout({ children }: MainLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -109,7 +113,7 @@ export function MainLayout() {
 
           {/* Right Section */}
           <div className="flex items-center gap-4">
-            <Button className="text-gray-500" variant="secondary"><IoNotifications /></Button>
+            <Button className="text-gray-500" variant="secondary">🔔</Button>
             <div className="flex items-center gap-2">
               <Avatar
                 src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e"
@@ -124,7 +128,7 @@ export function MainLayout() {
         </header>
         {/* Content */}
         <main className="flex-1 p-6">
-          <Outlet />
+          {children || <Outlet />}
         </main>
       </div>
     </div>

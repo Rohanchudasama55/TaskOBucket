@@ -2,7 +2,7 @@ import { Provider } from "react-redux"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import type { ReactNode } from "react"
 import { store } from "./store"
-import { ErrorBoundary } from "../components/ErrorBoundary"
+import { ErrorBoundary } from "../components/common/ErrorBoundary"
 
 // Create QueryClient outside component to prevent recreation
 const queryClient = new QueryClient({

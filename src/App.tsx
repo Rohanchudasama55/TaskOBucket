@@ -1,7 +1,7 @@
 
 import './App.css'
 import { AppRoutes } from './routes/AppRoutes'
-import { ToastContainer } from './components/ToastContainer'
+import { ToastContainer } from './components/common/ToastContainer'
 
 function App() {
   return (

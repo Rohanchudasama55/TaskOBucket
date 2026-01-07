@@ -27,9 +27,9 @@ export const navItems: NavItem[] = [
   {
     label: "Projects ",
     // icon: CategoryIcon,
-    path: "/Projects",
+    path: "/projects",
     matchPaths: [
-        "/Projects"
+        "/projects"
     ],
     // children: [
     //   {
