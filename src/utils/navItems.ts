@@ -1,16 +1,15 @@
 import type { ComponentType } from "react";
 
-export type NavIcon =ComponentType<any>;
+export type NavIcon = ComponentType<any>;
 
-
- interface SubNavItem {
+interface SubNavItem {
   label: string;
   path: string;
   matchPaths: string[];
   children?: NavItem[];
 }
-    
- interface NavItem {
+
+interface NavItem {
   label: string;
   icon?: NavIcon;
   path: string;
@@ -21,16 +20,14 @@ export const navItems: NavItem[] = [
   {
     label: "Dashboard",
     // icon: SpaceDashboardIcon,
-    path: "/dashboard", 
+    path: "/dashboard",
     matchPaths: ["/dashboard"],
   },
   {
     label: "Projects ",
     // icon: CategoryIcon,
     path: "/projects",
-    matchPaths: [
-        "/projects"
-    ],
+    matchPaths: ["/projects"],
     // children: [
     //   {
     //     label: "Categories",
@@ -48,7 +45,7 @@ export const navItems: NavItem[] = [
     //   },
     // ],
   },
-   {
+  {
     label: "Issues",
     // icon: HomeIcon,
     path: "/issues",
