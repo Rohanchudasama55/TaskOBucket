@@ -1,17 +1,17 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { 
-  LoginPage, 
-  RegisterPage, 
-  DashboardPage, 
-  BoardPage, 
-  IssuesPage,  
-  CreateOrganizationPage, 
-  NotFoundPage 
-} from '../pages'
-import { ProtectedRoute } from '../components/auth/ProtectedRoute'
-import { MainLayout } from '../layouts/MainLayout'
-import { ForgotPasswordPage, ResetPasswordPage } from '../pages/auth';
-import TeamsPage from '../pages/team/Teams.page';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  LoginPage,
+  RegisterPage,
+  DashboardPage,
+  BoardPage,
+  IssuesPage,
+  CreateOrganizationPage,
+  NotFoundPage,
+} from "../pages";
+import { ProtectedRoute } from "../components/auth/ProtectedRoute";
+import { MainLayout } from "../layouts/MainLayout";
+import { ForgotPasswordPage, ResetPasswordPage } from "../pages/auth";
+import TeamsPage from "../pages/team/Teams.page";
 
 export function AppRoutes() {
   return (
@@ -29,62 +29,26 @@ export function AppRoutes() {
 
         <Route path="/signup" element={<RegisterPage />} /> */}
 
+        <Route element={<ProtectedRoute />}>
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<DashboardPage />} />
 
-        
-        <Route path="/" element={
-          <ProtectedRoute>
-            <MainLayout>
-             <DashboardPage />
-            </MainLayout>
-          </ProtectedRoute>
-        } />
+            <Route path="/dashboard" element={<DashboardPage />} />
 
-        <Route path="/dashboard" element={
-          <ProtectedRoute>
-            <MainLayout>
-              <DashboardPage />
-            </MainLayout>
-          </ProtectedRoute>
-        } />
+            <Route path="/board" element={<BoardPage />} />
 
-        <Route path="/board" element={
-          <ProtectedRoute>
-             <MainLayout>
-               <BoardPage />
-             </MainLayout>
-          </ProtectedRoute>
-        } />
+            <Route path="/projects" element={<BoardPage />} />
 
-        <Route path="/projects" element={
-          <ProtectedRoute>
-             <MainLayout>
-               <BoardPage />
-            </MainLayout>
-          </ProtectedRoute>
-        } />
+            <Route path="/issues" element={<IssuesPage />} />
 
-        <Route path="/issues" element={
-          <ProtectedRoute>
-             <MainLayout>
-              <IssuesPage />
-            </MainLayout>
-          </ProtectedRoute>
-        } />
+            <Route path="/teams" element={<TeamsPage />} />
+          </Route>
+          <Route
+            path="/auth/create-organization"
+            element={<CreateOrganizationPage />}
+          />
+        </Route>
 
-        <Route path="/teams" element={
-          <ProtectedRoute>
-            <MainLayout>
-              <TeamsPage />
-            </MainLayout>
-          </ProtectedRoute>
-        } />
-
-        <Route path="/auth/create-organization" element={
-          <ProtectedRoute>
-              <CreateOrganizationPage />
-          </ProtectedRoute>
-        } />
-        
         {/* 404 */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
