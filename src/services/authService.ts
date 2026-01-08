@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { LoginRequest, LoginResponse, ForgotPasswordRequest, ForgotPasswordResponse, ResetPasswordRequest, ResetPasswordResponse, UserUpdateRequest, UserUpdateResponse, RegisterRequest, RegisterResponse } from '../types/auth';
 
-const API_BASE_URL = 'https://f71101ccbb70.ngrok-free.app/api';
+const API_BASE_URL = 'https://d1471c1a92c4.ngrok-free.app/api';
 
 // Create axios instance with default config
 const authApi = axios.create({
