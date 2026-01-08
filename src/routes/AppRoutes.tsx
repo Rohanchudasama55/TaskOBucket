@@ -1,17 +1,17 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import {
-  LoginPage,
-  RegisterPage,
-  DashboardPage,
-  BoardPage,
-  IssuesPage,
-  CreateOrganizationPage,
-  NotFoundPage,
-} from "../pages";
-import { ProtectedRoute } from "../components/auth/ProtectedRoute";
-import { MainLayout } from "../layouts/MainLayout";
-import { ForgotPasswordPage, ResetPasswordPage } from "../pages/auth";
-import TeamsPage from "../pages/team/Teams.page";
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { 
+  LoginPage, 
+  RegisterPage, 
+  DashboardPage, 
+  BoardPage, 
+  IssuesPage,  
+  CreateOrganizationPage, 
+  NotFoundPage 
+} from '../pages'
+import { ProtectedRoute } from '../components/auth/ProtectedRoute'
+import { MainLayout } from '../layouts/MainLayout'
+import { ForgotPasswordPage, ResetPasswordPage } from '../pages/auth';
+import TeamsPage from '../pages/team/Teams.page';
 
 export function AppRoutes() {
   return (
@@ -25,13 +25,19 @@ export function AppRoutes() {
 
         <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
 
-        <Route path="/login" element={<LoginPage />} />
+        {/* <Route path="/login" element={<LoginPage />} />
 
-        <Route path="/signup" element={<RegisterPage />} />
+        <Route path="/signup" element={<RegisterPage />} /> */}
 
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
-        <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
+        
+        <Route path="/" element={
+          <ProtectedRoute>
+            <MainLayout>
+             <DashboardPage />
+            </MainLayout>
+          </ProtectedRoute>
+        } />
 
         <Route
           path="/"
@@ -88,21 +94,8 @@ export function AppRoutes() {
           }
         />
 
-        <Route
-          path="/teams"
-          element={
-            <ProtectedRoute>
-              <MainLayout>
-                <TeamsPage />
-              </MainLayout>
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/create-organization"
-          element={
-            <ProtectedRoute>
+        <Route path="/auth/create-organization" element={
+          <ProtectedRoute>
               <CreateOrganizationPage />
             </ProtectedRoute>
           }

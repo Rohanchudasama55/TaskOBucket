@@ -27,17 +27,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Check for existing token on app start
     const existingToken = authService.getToken();
+    const existingUser = authService.getUser();
     console.log('Existing token on startup:', existingToken ? 'Found' : 'Not found');
+    console.log('Existing user on startup:', existingUser ? 'Found' : 'Not found');
     
     if (existingToken) {
       setTokenState(existingToken);
       
-      // Decode user info from token
-      const userInfo = authService.getUserFromToken(existingToken);
-      console.log('Decoded user info:', userInfo);
-      
-      if (userInfo) {
-        setUser(userInfo);
+      // Use stored user data if available, otherwise decode from token
+      if (existingUser) {
+        setUser(existingUser);
+      } else {
+        // Fallback to decoding from token
+        const userInfo = authService.getUserFromToken(existingToken);
+        console.log('Decoded user info:', userInfo);
+        
+        if (userInfo) {
+          setUser(userInfo);
+          // Store the decoded user info for future use
+          authService.setUser(userInfo);
+        }
       }
     }
     setIsLoading(false);

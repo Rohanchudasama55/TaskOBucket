@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { toast } from '../utils/toast'
 
-const baseURL = import.meta.env.VITE_API_BASE_URL || '/api'
+const baseURL = import.meta.env.VITE_API_BASE_URL || 'https://70175e4a16c6.ngrok-free.app/api'
 
 export const api = axios.create({ 
   baseURL,

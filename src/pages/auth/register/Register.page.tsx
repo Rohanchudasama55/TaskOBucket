@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { Star, CheckCircle, EyeOff, Eye } from "lucide-react";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { Star, CheckCircle } from "lucide-react";
 import { Button } from "../../../components/ui/Button";
 import { Input } from "../../../components/ui/Input";
 import {
@@ -12,6 +13,7 @@ import {
 import { useRegisterForm } from "./Register.hooks";
 
 const RegisterPage: React.FC = () => {
+  const navigate = useNavigate();
   const {
     formData,
     acceptTerms,
@@ -21,9 +23,6 @@ const RegisterPage: React.FC = () => {
     handleTermsChange,
     handleSubmit,
   } = useRegisterForm();
-
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <section className="flex justify-center items-center">
@@ -153,66 +152,6 @@ const RegisterPage: React.FC = () => {
                   />
                 </div>
 
-                <div className="w-full">
-                  {/* Header row */}
-                  <div className="flex items-center justify-between mb-2">
-                    <label
-                      htmlFor="password"
-                      className="text-sm font-medium text-gray-700"
-                    >
-                      Password
-                    </label>
-                  </div>
-
-                  {/* Input wrapper */}
-                  <div className="relative">
-                    <input
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••"
-                      className="
-        w-full
-        rounded-lg
-        border border-gray-200
-        bg-gray-50
-        px-4 py-3
-        pr-12
-        text-sm
-        text-gray-900
-        placeholder-gray-400
-        focus:bg-white
-        focus:border-blue-500
-        focus:ring-2
-        focus:ring-blue-100
-        focus:outline-none
-        transition
-      "
-                    />
-
-                    {/* Show / Hide button */}
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="
-        absolute
-        right-4
-        top-1/2
-        -translate-y-1/2
-        text-gray-400
-        hover:text-gray-600
-        focus:outline-none
-      "
-                      aria-label={
-                        showPassword ? "Hide password" : "Show password"
-                      }
-                    >
-                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                    </button>
-                  </div>
-                </div>
-
                 <div className="flex items-center space-x-2">
                   <input
                     type="checkbox"
@@ -249,7 +188,10 @@ const RegisterPage: React.FC = () => {
 
               <p className="text-center text-sm mt-6 text-gray-600">
                 {REGISTER_MESSAGES.alreadyHaveAccount}{" "}
-                <span className="text-blue-600 font-medium cursor-pointer">
+                <span
+                  className="text-blue-600 font-medium cursor-pointer hover:underline"
+                  onClick={() => navigate("/login")}
+                >
                   {REGISTER_MESSAGES.logIn}
                 </span>
               </p>

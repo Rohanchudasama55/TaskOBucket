@@ -6,7 +6,13 @@ import type {
   ForgotPasswordResponse,
   ResetPasswordRequest,
   ResetPasswordResponse,
+  UserUpdateRequest,
+  UserUpdateResponse,
+  RegisterRequest,
+  RegisterResponse,
 } from "../types/auth";
+
+const API_BASE_URL = "https://f71101ccbb70.ngrok-free.app/api";
 
 const API_BASE_URL = "https://5699ff30f1a5.ngrok-free.app/api";
 // Create axios instance with default config
@@ -19,6 +25,26 @@ const authApi = axios.create({
 });
 
 export const authService = {
+  userUpdate: async (
+    userId: string,
+    userData: UserUpdateRequest
+  ): Promise<UserUpdateResponse> => {
+    try {
+      const response = await authApi.put<UserUpdateResponse>(
+        `/user/user-update/${userId}`,
+        userData
+      );
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const errorMessage =
+          error.response?.data?.message || "User update failed";
+        throw new Error(errorMessage);
+      }
+      throw new Error("An unexpected error occurred");
+    }
+  },
+
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {
     try {
       const response = await authApi.post<LoginResponse>(
@@ -83,9 +109,21 @@ export const authService = {
     return localStorage.getItem("auth_token");
   },
 
-  // Remove token from localStorage
+  // Store user data in localStorage
+  setUser: (user: { name: string; email?: string; id?: string }) => {
+    localStorage.setItem("auth_user", JSON.stringify(user));
+  },
+
+  // Get user data from localStorage
+  getUser: () => {
+    const userData = localStorage.getItem("auth_user");
+    return userData ? JSON.parse(userData) : null;
+  },
+
+  // Remove token and user data from localStorage
   removeToken: () => {
     localStorage.removeItem("auth_token");
+    localStorage.removeItem("auth_user");
   },
 
   // Check if user is authenticated

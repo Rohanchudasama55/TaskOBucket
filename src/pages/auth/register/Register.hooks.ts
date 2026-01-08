@@ -1,11 +1,16 @@
 import { useState } from 'react';
-import { REGISTER_FORM_DEFAULTS, REGISTER_MESSAGES, REGISTER_SIMULATION_DELAY } from './Register.constants';
+import { useNavigate } from 'react-router-dom';
+import { authService } from '../../../services/authService';
+import { useAuthContext } from '../../../contexts/AuthContext';
+import { toast } from '../../../utils/toast';
+import { REGISTER_FORM_DEFAULTS, REGISTER_MESSAGES } from './Register.constants';
 
 export interface RegisterFormData {
   fullName: string;
   companyName: string;
   email: string;
-  password: string;
+  jobTitle: string;
+  avatarUrl: string;
 }
 
 export interface UseRegisterFormReturn {
@@ -20,11 +25,14 @@ export interface UseRegisterFormReturn {
 }
 
 export function useRegisterForm(): UseRegisterFormReturn {
+  const navigate = useNavigate();
+  const { setUser, user } = useAuthContext();
   const [formData, setFormData] = useState<RegisterFormData>({
     fullName: REGISTER_FORM_DEFAULTS.fullName,
     companyName: REGISTER_FORM_DEFAULTS.companyName,
     email: REGISTER_FORM_DEFAULTS.email,
-    password: REGISTER_FORM_DEFAULTS.password
+    jobTitle: '',
+    avatarUrl: '',
   });
   const [acceptTerms, setAcceptTerms] = useState<boolean>(REGISTER_FORM_DEFAULTS.acceptTerms);
   const [error, setError] = useState('');
@@ -52,14 +60,47 @@ export function useRegisterForm(): UseRegisterFormReturn {
     setIsLoading(true);
     setError('');
     
-    // Simulate API call
-    return new Promise<void>((resolve) => {
-      setTimeout(() => {
-        console.log('Signup successful', formData);
-        setIsLoading(false);
-        resolve();
-      }, REGISTER_SIMULATION_DELAY);
-    });
+    try {
+      // Get user ID from auth context (decoded from token during login)
+      const userId = user?.id;
+      
+      if (!userId) {
+        setError('User not authenticated. Please log in first.');
+        return;
+      }
+      
+      const updateData = {
+        name: formData.fullName,
+        jobTitle: formData.jobTitle || '',
+        avatarUrl: formData.avatarUrl || '',
+        isActive: true
+      };
+
+      const response = await authService.userUpdate(userId, updateData);
+      
+      if (response.success && response.result) {
+        // Store user data in context and localStorage
+        const userData = {
+          id: response.result.id,
+          email: formData.email,
+          name: response.result.name
+        };
+        setUser(userData);
+        authService.setUser(userData);
+        
+        // Show success message
+        toast.success('Profile updated successfully!');
+        
+        // Navigate to projects page
+        navigate('/projects');
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Profile update failed';
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const clearError = () => {
