@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Star, CheckCircle } from "lucide-react";
 import { Button } from "../../../components/ui/Button";
 import { Input } from "../../../components/ui/Input";
@@ -6,6 +7,7 @@ import { PREVIEW_USERS, TASKS, REGISTER_LABELS, REGISTER_PLACEHOLDERS, REGISTER_
 import { useRegisterForm } from "./Register.hooks";
 
 const RegisterPage: React.FC = () => {
+  const navigate = useNavigate();
   const {
     formData,
     acceptTerms,
@@ -140,18 +142,6 @@ const RegisterPage: React.FC = () => {
                   />
                 </div>
 
-                <div>
-                  <label className="text-sm font-medium">{REGISTER_LABELS.password}</label>
-                  <Input
-                    name="password"
-                    type="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    showPasswordToggle={true}
-                    className="mt-2 w-full h-12 px-4 rounded-xl border focus:ring-2 focus:ring-blue-500"
-                    placeholder={REGISTER_PLACEHOLDERS.password}
-                  />
-                </div>
 
                 <div className="flex items-center space-x-2">
                   <input
@@ -184,7 +174,10 @@ const RegisterPage: React.FC = () => {
 
               <p className="text-center text-sm mt-6 text-gray-600">
                 {REGISTER_MESSAGES.alreadyHaveAccount}{" "}
-                <span className="text-blue-600 font-medium cursor-pointer">
+                <span 
+                  className="text-blue-600 font-medium cursor-pointer hover:underline"
+                  onClick={() => navigate('/login')}
+                >
                   {REGISTER_MESSAGES.logIn}
                 </span>
               </p>

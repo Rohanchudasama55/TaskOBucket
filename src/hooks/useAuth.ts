@@ -5,7 +5,6 @@ import { useAuthContext } from '../contexts/AuthContext';
 import type { LoginRequest, LoginResponse, ForgotPasswordRequest, ForgotPasswordResponse, ResetPasswordRequest, ResetPasswordResponse, AuthError } from '../types/auth';
 
 export const useLogin = () => {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { setUser, setToken } = useAuthContext();
 
@@ -20,18 +19,22 @@ export const useLogin = () => {
       // Store token in context and localStorage
       setToken(token);
       
-      // Decode user info from token
-      const userInfo = authService.getUserFromToken(token);
-      if (userInfo) {
-        setUser(userInfo);
-      }
+      // Create user data from response and store it
+      const userData = {
+        id: '', // Will be decoded from token if needed
+        email: '', // Could be passed from login form if needed
+        name: data.result.name
+      };
+      
+      // Store user data in context and localStorage
+      setUser(userData);
+      authService.setUser(userData);
       
       // Invalidate and refetch any auth-related queries
       queryClient.invalidateQueries({ queryKey: ['auth'] });
       
-      console.log('Navigating to dashboard...');
-      // Navigate to dashboard or intended page
-      navigate('/dashboard', { replace: true });
+      // Don't navigate here - let the calling component handle navigation
+      console.log('Login successful, letting component handle navigation...');
     },
     onError: (error) => {
       console.error('Login failed:', error.message);

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { organizationService } from '../../services/organizationService';
 import type { CreateOrganizationRequest } from '../../types/organization';
 
@@ -20,6 +21,7 @@ export interface UseCreateOrganizationReturn {
 }
 
 export function useCreateOrganization(): UseCreateOrganizationReturn {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<CreateOrganizationFormData>({
     name: '',
     organization_key: ''
@@ -84,10 +86,10 @@ export function useCreateOrganization(): UseCreateOrganizationReturn {
       
       setSuccess(`Organization "${formData.name}" created successfully!`);
       
-      // Reset form after successful creation
+      // Navigate to projects page after successful creation
       setTimeout(() => {
-        resetForm();
-      }, 3000);
+        navigate('/projects');
+      }, 1500); // Shorter delay to show success message briefly before redirect
       
     } catch (err: any) {
       console.error('Create organization error:', err);

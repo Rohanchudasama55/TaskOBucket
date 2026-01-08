@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useLogin } from '../../../hooks/useAuth';
 import { LOGIN_FORM_DEFAULTS } from './Login.constants';
 
@@ -23,6 +24,7 @@ export function useLoginForm(): UseLoginFormReturn {
     password: LOGIN_FORM_DEFAULTS.password
   });
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const loginMutation = useLogin();
 
@@ -55,11 +57,24 @@ export function useLoginForm(): UseLoginFormReturn {
 
     try {
       console.log('Attempting login...');
-      const result = await loginMutation.mutateAsync({
+      const response = await loginMutation.mutateAsync({
         email: formData.email,
         password: formData.password
       });
-      console.log('Login successful:', result);
+      console.log('Login successful:', response);
+      console.log('requiresSetup value:', response.result?.requiresSetup);
+      
+      // Small delay to ensure auth state is updated
+      setTimeout(() => {
+        // Redirect based on requiresSetup flag
+        if (response.result?.requiresSetup) {
+          console.log('Redirecting to create organization...');
+          navigate('/auth/register', { replace: true });
+        } else {
+          console.log('Redirecting to projects...');
+          navigate('/projects', { replace: true });
+        }
+      }, 100);
     } catch (err: any) {
       console.error('Login error:', err);
       setError(err.message || 'Login failed. Please try again.');
