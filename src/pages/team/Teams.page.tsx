@@ -43,11 +43,27 @@ const RoleSelect = ({
   const roles: MemberRole[] = ["Admin", "Editor", "Viewer"];
 
   return (
-    <div className="relative">
+    <div className="relative w-[140px]">
       <select
         value={value}
         onChange={(e) => onChange(memberId, e.target.value as MemberRole)}
-        className="appearance-none bg-white border border-slate-200 rounded-lg px-4 py-2 pr-10 text-sm text-slate-700 hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer transition-colors"
+        className="
+          w-full
+          h-10
+          appearance-none
+          rounded-lg
+          border border-slate-200
+          bg-white
+          px-4 pr-9
+          text-sm font-medium text-slate-800
+          shadow-sm
+          hover:border-slate-300
+          focus:outline-none
+          focus:ring-2 focus:ring-blue-500
+          focus:border-blue-500
+          transition
+          cursor-pointer
+        "
       >
         {roles.map((role) => (
           <option key={role} value={role}>
@@ -55,7 +71,17 @@ const RoleSelect = ({
           </option>
         ))}
       </select>
-      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+
+      {/* Chevron */}
+      <ChevronDown
+        className="
+          pointer-events-none
+          absolute right-3 top-1/2
+          h-4 w-4
+          -translate-y-1/2
+          text-slate-400
+        "
+      />
     </div>
   );
 };

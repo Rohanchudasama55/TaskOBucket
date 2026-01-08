@@ -1,11 +1,6 @@
 // Auth pages
-<<<<<<< HEAD
-export { LoginPage, RegisterPage } from "./auth";
-export type { LoginFormData, RegisterFormData } from "./auth";
-=======
 export { LoginPage, RegisterPage, ForgotPasswordPage, ResetPasswordPage } from './auth';
 export type { LoginFormData, RegisterFormData } from './auth';
->>>>>>> cc51885918e2d8b038fc4c58f45561fe27fb59e2
 
 // Dashboard pages
 export { DashboardPage } from "./dashboard";
