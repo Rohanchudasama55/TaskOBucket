@@ -1,5 +1,6 @@
-import { Plus } from 'lucide-react';
-import type { ViewMode } from '../../types/kanban';
+import { Plus } from "lucide-react";
+import type { ViewMode } from "../../types/kanban";
+import { Button } from "../ui/Button";
 
 interface BoardHeaderProps {
   title: string;
@@ -9,18 +10,25 @@ interface BoardHeaderProps {
 }
 
 const viewModes: { key: ViewMode; label: string }[] = [
-  { key: 'kanban', label: 'Kanban' },
-  { key: 'list', label: 'List' },
-  { key: 'timeline', label: 'Timeline' }
+  { key: "kanban", label: "Kanban" },
+  { key: "list", label: "List" },
+  { key: "timeline", label: "Timeline" },
 ];
 
-export function BoardHeader({ title, viewMode, onViewModeChange, onCreateIssue }: BoardHeaderProps) {
+export function BoardHeader({
+  title,
+  viewMode,
+  onViewModeChange,
+  onCreateIssue,
+}: BoardHeaderProps) {
   return (
     <div className="flex items-center justify-between mb-8">
       {/* Left side - Title and View Toggle */}
       <div className="flex items-center gap-8">
-        <h1 className="text-3xl font-bold text-slate-900 tracking-tight">{title}</h1>
-        
+        <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
+          {title}
+        </h1>
+
         {/* View Toggle */}
         <div className="flex bg-slate-100/80 backdrop-blur-sm rounded-xl p-1 ring-1 ring-slate-200/50">
           {viewModes.map((mode) => (
@@ -29,8 +37,8 @@ export function BoardHeader({ title, viewMode, onViewModeChange, onCreateIssue }
               onClick={() => onViewModeChange(mode.key)}
               className={`relative px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200 ease-out ${
                 viewMode === mode.key
-                  ? 'bg-white text-slate-900 shadow-sm ring-1 ring-slate-200/50'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+                  ? "bg-white text-slate-900 shadow-sm ring-1 ring-slate-200/50"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-white/50"
               }`}
             >
               {mode.label}
@@ -74,13 +82,13 @@ export function BoardHeader({ title, viewMode, onViewModeChange, onCreateIssue }
         </div>
 
         {/* Create Issue Button */}
-        <button
+        <Button
           onClick={onCreateIssue}
           className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold rounded-xl hover:from-blue-700 hover:to-indigo-700 hover:shadow-lg hover:shadow-blue-500/25 hover:-translate-y-0.5 transition-all duration-200 ease-out ring-1 ring-blue-600/20"
         >
           <Plus className="h-4 w-4" />
           Create Issue
-        </button>
+        </Button>
       </div>
     </div>
   );
