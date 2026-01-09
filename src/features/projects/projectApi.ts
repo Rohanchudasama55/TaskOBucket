@@ -4,7 +4,6 @@ export interface CreateProjectRequest {
   name: string
   description?: string
   ownerId?: string
-  key?: string
 }
 
 export interface UpdateProjectRequest {
@@ -25,8 +24,8 @@ export const projectsApi = {
       id,
       name: 'Sample Project',
       description: 'This is a sample project',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
     })
   },
 
@@ -35,8 +34,8 @@ export const projectsApi = {
     return Promise.resolve({
       id: `project-${Date.now()}`,
       ...project,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
     })
   },
 
@@ -46,7 +45,7 @@ export const projectsApi = {
       id,
       name: updates.name || 'Updated Project',
       description: updates.description,
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date(),
     } as Project)
   },
 
