@@ -11,7 +11,7 @@ import TeamsPage from "../pages/team/Teams.page";
 import { ReportsPage } from "../pages/Analysis";
 import { AcceptInvitePage } from "../pages/accept-invite";
 import { DashboardPage } from "../pages/dashboard";
-import { BoardPage, IssuesPage } from "../pages/projects";
+import { BoardPage } from "../pages/projects";
 import { CreateOrganizationPage } from "../pages/settings";
 import { NotFoundPage } from "../pages/common";
 
@@ -42,7 +42,7 @@ export function AppRoutes() {
 
             <Route path="/projects" element={<BoardPage />} />
 
-            <Route path="/issues" element={<IssuesPage />} />
+            {/* <Route path="/issues" element={<IssuesPage />} /> */}
 
             <Route path="/reports" element={<ReportsPage />} />
 
