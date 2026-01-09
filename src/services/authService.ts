@@ -10,7 +10,7 @@ import type {
   UserUpdateResponse,
 } from "../types/auth";
 
-const API_BASE_URL = "https://40854664e1e2.ngrok-free.app/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // Create axios instance with default config
 const authApi = axios.create({
