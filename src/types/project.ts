@@ -3,6 +3,11 @@ export interface Project {
   name: string
   description?: string
   ownerId?: string
-  createdAt?: Date
-  updatedAt?: Date
+  createdAt?: string
+  updatedAt?: string
+  image?: string
+  type?: string
+  key?: string
+  openIssuesCount?: number
+  completedIssuesCount?: number
 }

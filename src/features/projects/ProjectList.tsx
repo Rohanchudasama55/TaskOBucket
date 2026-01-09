@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { projectsApi } from './projectApi'
 import { CreateProjectModal } from './CreateProjectModal'
+import { CommonCard } from '../../components/common'
 import type { Project } from '../../types/project'
 import type { CreateProjectRequest } from './projectApi'
 
@@ -54,6 +55,23 @@ export function ProjectList() {
     }
   }
 
+  const handleProjectMoreClick = (projectId: string) => {
+    // For now, just show delete confirmation
+    handleDeleteProject(projectId)
+  }
+
+  const formatUpdatedAt = (dateString?: string) => {
+    if (!dateString) return 'recently'
+    const date = new Date(dateString)
+    const now = new Date()
+    const diffInDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24))
+    
+    if (diffInDays === 0) return 'today'
+    if (diffInDays === 1) return 'yesterday'
+    if (diffInDays < 7) return `${diffInDays} days ago`
+    return date.toLocaleDateString()
+  }
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center p-8">
@@ -99,38 +117,17 @@ export function ProjectList() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project) => (
-            <div
+            <CommonCard
               key={project.id}
-              className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"
-            >
-              <div className="flex justify-between items-start mb-3">
-                <h3 className="text-lg font-semibold text-gray-900 truncate flex-1">
-                  {project.name}
-                </h3>
-                <button
-                  onClick={() => handleDeleteProject(project.id)}
-                  className="text-gray-400 hover:text-red-600 p-1"
-                  title="Delete project"
-                >
-                  🗑️
-                </button>
-              </div>
-              
-              {project.description && (
-                <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                  {project.description}
-                </p>
-              )}
-              
-              <div className="text-xs text-gray-500">
-                {project.createdAt && (
-                  <div>Created: {new Date(project.createdAt).toLocaleDateString()}</div>
-                )}
-                {project.ownerId && (
-                  <div>Owner: {project.ownerId}</div>
-                )}
-              </div>
-            </div>
+              image={(project as any).image || 'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=200&fit=crop'}
+              badge={(project as any).type || 'PROJECT'}
+              title={project.name}
+              keyLabel={(project as any).key || project.id.slice(0, 8).toUpperCase()}
+              openCount={(project as any).openIssuesCount || 0}
+              doneCount={(project as any).completedIssuesCount || 0}
+              updatedAt={formatUpdatedAt((project as any).updatedAt || (project as any).createdAt)}
+              onMoreClick={() => handleProjectMoreClick(project.id)}
+            />
           ))}
         </div>
       )}
