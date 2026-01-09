@@ -95,7 +95,19 @@ export const authService = {
       throw new Error("An unexpected error occurred");
     }
   },
-
+  acceptInvite: async (data: ResetPasswordRequest): Promise<ResetPasswordResponse> => {
+    try {
+      const response = await authApi.put<ResetPasswordResponse>('/user/accept-invite?token=${data.token}', data);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.message || 'Failed to accept invite';
+        throw new Error(errorMessage);
+      }
+      throw new Error('An unexpected error occurred');
+    }
+  },
+  
   // Store token in localStorage
   setToken: (token: string) => {
     localStorage.setItem("auth_token", token);

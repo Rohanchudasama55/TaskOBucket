@@ -116,19 +116,13 @@ export function LoginPage() {
                    </div>
                    <div className="relative">
                      <Input
-                       type={showPassword ? "text" : "password"}
+                       type="password"                                                                 
                        value={formData.password}
+                       showPasswordToggle
                        onChange={handlePasswordChange}
                        placeholder={LOGIN_PLACEHOLDERS.password}
                        className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 pr-12 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition"
                      />
-                     <button
-                       type="button"
-                       onClick={() => setShowPassword(!showPassword)}
-                       className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
-                     >
-                       {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                     </button>
                    </div>
                  </div>
  

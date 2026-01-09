@@ -8,8 +8,10 @@ import {
   ResetPasswordPage,
 } from "../pages/auth";
 import TeamsPage from "../pages/team/Teams.page";
+import { ReportsPage } from "../pages/Analysis";
+import { AcceptInvitePage } from "../pages/accept-invite";
 import { DashboardPage } from "../pages/dashboard";
-import { BoardPage, IssuesPage } from "../pages/projects";
+import { BoardPage } from "../pages/projects";
 import { CreateOrganizationPage } from "../pages/settings";
 import { NotFoundPage } from "../pages/common";
 
@@ -25,6 +27,7 @@ export function AppRoutes() {
 
         <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
 
+        <Route path="/accept-invite" element={<AcceptInvitePage />} />
         {/* <Route path="/login" element={<LoginPage />} />
 
         <Route path="/signup" element={<RegisterPage />} /> */}
@@ -39,7 +42,9 @@ export function AppRoutes() {
 
             <Route path="/projects" element={<BoardPage />} />
 
-            <Route path="/issues" element={<IssuesPage />} />
+            {/* <Route path="/issues" element={<IssuesPage />} /> */}
+
+            <Route path="/reports" element={<ReportsPage />} />
 
             <Route path="/teams" element={<TeamsPage />} />
           </Route>
