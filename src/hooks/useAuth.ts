@@ -66,6 +66,19 @@ export const useResetPassword = () => {
   });
 };
 
+export const useAcceptInvite = () => {
+  return useMutation<ResetPasswordResponse, AuthError, ResetPasswordRequest>({
+    mutationFn: authService.acceptInvite,
+    onSuccess: (data) => {
+      console.log('Accept Invite response:', data);
+    },
+    onError: (error) => {
+      console.error('Accept Invite failed:', error.message);
+    },
+  });
+};
+
+
 export const useLogout = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();

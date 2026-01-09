@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { LoginRequest, LoginResponse, ForgotPasswordRequest, ForgotPasswordResponse, ResetPasswordRequest, ResetPasswordResponse, UserUpdateRequest, UserUpdateResponse, RegisterRequest, RegisterResponse } from '../types/auth';
 
-const API_BASE_URL = 'https://d1471c1a92c4.ngrok-free.app/api';
+const API_BASE_URL = 'https://40854664e1e2.ngrok-free.app/api';
 
 // Create axios instance with default config
 const authApi = axios.create({
@@ -66,7 +66,19 @@ export const authService = {
       throw new Error('An unexpected error occurred');
     }
   },
-
+  acceptInvite: async (data: ResetPasswordRequest): Promise<ResetPasswordResponse> => {
+    try {
+      const response = await authApi.put<ResetPasswordResponse>('/user/accept-invite?token=${data.token}', data);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.message || 'Failed to accept invite';
+        throw new Error(errorMessage);
+      }
+      throw new Error('An unexpected error occurred');
+    }
+  },
+  
   // Store token in localStorage
   setToken: (token: string) => {
     localStorage.setItem('auth_token', token);

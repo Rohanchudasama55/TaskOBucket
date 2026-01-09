@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { useResetPassword } from '../../../hooks/useAuth';
-import { RESET_PASSWORD_FORM_DEFAULTS } from './ResetPassword.constants';
+import { useAcceptInvite } from '../../hooks/useAuth';
+import { ACCEPT_INVITE_FORM_DEFAULTS } from './Constant';
 
 export interface ResetPasswordFormData {
   newPassword: string;
@@ -24,62 +24,66 @@ export interface UseResetPasswordFormReturn {
 }
 
 // Password validation regex
-const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+const PASSWORD_REGEX =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
 export function useResetPasswordForm(): UseResetPasswordFormReturn {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState<ResetPasswordFormData>({
-    newPassword: RESET_PASSWORD_FORM_DEFAULTS.newPassword,
-    confirmPassword: RESET_PASSWORD_FORM_DEFAULTS.confirmPassword
+    newPassword: ACCEPT_INVITE_FORM_DEFAULTS.newPassword,
+    confirmPassword: ACCEPT_INVITE_FORM_DEFAULTS.confirmPassword
   });
+
   const [error, setError] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [token, setToken] = useState<string | null>(null);
   const [isValidToken, setIsValidToken] = useState(true);
 
-  const resetPasswordMutation = useResetPassword();
+  const acceptInviteMutation = useAcceptInvite();
 
-  // Extract token from URL parameters
+  // Extract invite token from URL
   useEffect(() => {
     const tokenParam = searchParams.get('token');
-    console.log('Token from URL:', tokenParam);
-    
+
     if (tokenParam) {
       setToken(tokenParam);
       setIsValidToken(true);
     } else {
       setIsValidToken(false);
-      setError('Invalid or missing reset token. Please request a new password reset link.');
+      setError(
+        'Invalid or missing invitation link. Please contact the administrator.'
+      );
     }
   }, [searchParams]);
 
   const handleNewPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({ ...prev, newPassword: e.target.value }));
-    if (error) setError(''); // Clear error when user starts typing
-    if (isSuccess) setIsSuccess(false); // Clear success state when user starts typing
+    if (error) setError('');
+    if (isSuccess) setIsSuccess(false);
   };
 
   const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({ ...prev, confirmPassword: e.target.value }));
-    if (error) setError(''); // Clear error when user starts typing
-    if (isSuccess) setIsSuccess(false); // Clear success state when user starts typing
+    if (error) setError('');
+    if (isSuccess) setIsSuccess(false);
   };
 
   const validatePassword = (password: string): string | null => {
     if (!password) {
-      return 'Please enter a new password';
+      return 'Please create a password to activate your account';
     }
-    
+
     if (password.length < 8) {
       return 'Password must be at least 8 characters long';
     }
-    
+
     if (!PASSWORD_REGEX.test(password)) {
-      return 'Password must contain uppercase, lowercase, number, and special character';
+      return 'Password must include uppercase, lowercase, number, and special character';
     }
-    
+
     return null;
   };
 
@@ -87,48 +91,49 @@ export function useResetPasswordForm(): UseResetPasswordFormReturn {
     e.preventDefault();
     setError('');
     setIsSuccess(false);
-    
-    console.log('Reset password form submitted');
-    
-    // Check if token is valid
+
+    // Token validation
     if (!token || !isValidToken) {
-      setError('Invalid or expired reset token. Please request a new password reset link.');
+      setError(
+        'This invitation link is invalid or has expired. Please contact the administrator.'
+      );
       return;
     }
 
-    // Validate new password
+    // Password validation
     const passwordError = validatePassword(formData.newPassword);
     if (passwordError) {
       setError(passwordError);
       return;
     }
 
-    // Check if passwords match
+    // Match passwords
     if (formData.newPassword !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
     }
 
     try {
-      console.log('Attempting to reset password...');
-      const result = await resetPasswordMutation.mutateAsync({
+      const result = await acceptInviteMutation.mutateAsync({
         token,
         newPassword: formData.newPassword,
         confirmPassword: formData.confirmPassword
       });
-      console.log('Password reset successful:', result);
-      
+
       setIsSuccess(true);
-      setSuccessMessage(result.message || 'Password reset successfully!');
+      setSuccessMessage(
+        result.message || 'Invitation accepted successfully. Your account is now active.'
+      );
     } catch (err: any) {
-      console.error('Reset password error:', err);
-      
-      // Handle specific error cases
-      if (err.message.includes('token') || err.message.includes('expired')) {
-        setError('Invalid or expired reset token. Please request a new password reset link.');
+      if (err.message?.includes('token') || err.message?.includes('expired')) {
+        setError(
+          'This invitation link is invalid or has expired. Please contact the administrator.'
+        );
         setIsValidToken(false);
       } else {
-        setError(err.message || 'Failed to reset password. Please try again.');
+        setError(
+          err.message || 'Failed to accept invitation. Please try again.'
+        );
       }
     }
   };
@@ -144,7 +149,7 @@ export function useResetPasswordForm(): UseResetPasswordFormReturn {
   return {
     formData,
     error,
-    isLoading: resetPasswordMutation.isPending,
+    isLoading: acceptInviteMutation.isPending,
     isSuccess,
     successMessage,
     token,

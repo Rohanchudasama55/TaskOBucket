@@ -12,6 +12,8 @@ import { ProtectedRoute } from "../components/auth/ProtectedRoute";
 import { MainLayout } from "../layouts/MainLayout";
 import { ForgotPasswordPage, ResetPasswordPage } from "../pages/auth";
 import TeamsPage from "../pages/team/Teams.page";
+import { ReportsPage } from "../pages/Analysis";
+import { AcceptInvitePage } from "../pages/accept-invite";
 
 export function AppRoutes() {
   return (
@@ -25,6 +27,7 @@ export function AppRoutes() {
 
         <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
 
+        <Route path="/accept-invite" element={<AcceptInvitePage />} />
         {/* <Route path="/login" element={<LoginPage />} />
 
         <Route path="/signup" element={<RegisterPage />} /> */}
@@ -40,6 +43,8 @@ export function AppRoutes() {
             <Route path="/projects" element={<BoardPage />} />
 
             <Route path="/issues" element={<IssuesPage />} />
+
+            <Route path="/reports" element={<ReportsPage />} />
 
             <Route path="/teams" element={<TeamsPage />} />
           </Route>
