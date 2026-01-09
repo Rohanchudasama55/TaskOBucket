@@ -8,13 +8,10 @@ import type {
   ResetPasswordResponse,
   UserUpdateRequest,
   UserUpdateResponse,
-  RegisterRequest,
-  RegisterResponse,
 } from "../types/auth";
 
-const API_BASE_URL = "https://f71101ccbb70.ngrok-free.app/api";
+const API_BASE_URL = "https://cfc7af127877.ngrok-free.app/api";
 
-const API_BASE_URL = "https://5699ff30f1a5.ngrok-free.app/api";
 // Create axios instance with default config
 const authApi = axios.create({
   baseURL: API_BASE_URL,

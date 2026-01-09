@@ -1,11 +1,9 @@
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuthState } from '../../hooks/useAuth';
 
-interface ProtectedRouteProps {
-  children: React.ReactNode;
-}
 
-export function ProtectedRoute({ children }: ProtectedRouteProps) {
+
+export function ProtectedRoute() {
   const { isAuthenticated, isLoading } = useAuthState();
   const location = useLocation();
 
@@ -21,11 +19,8 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   }
 
   if (!isAuthenticated) {
-    console.log('Not authenticated, redirecting to login');
     // Redirect to login page with return url
     return <Navigate to="/auth/login" state={{ from: location }} replace />;
   }
-
-  console.log('Authenticated, rendering protected content');
-  return <>{children}</>;
+  return <Outlet />;
 }
