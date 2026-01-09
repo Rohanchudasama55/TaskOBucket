@@ -18,9 +18,10 @@ export interface LoginResponse {
   statusCode: number;
   message: string;
   result: {
+    id: string;
     token: string;
     name: string;
-    requiresSetup: boolean;
+    setupStep: number;
   };
 }
 
@@ -53,6 +54,7 @@ export interface UserUpdateResponse {
     jobTitle: string;
     avatarUrl: string;
     isActive: boolean;
+    setupStep?: number;
   };
 }
 
@@ -67,9 +69,10 @@ export interface RegisterResponse {
   statusCode: number;
   message: string;
   result: {
+    id: string;
     token: string;
     name: string;
-    requiresSetup: boolean;
+    setupStep: number;
   };
 }
 

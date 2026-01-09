@@ -43,6 +43,7 @@ export function AppRoutes() {
 
             <Route path="/projects" element={<BoardPage />} />
 
+
             <Route path="/issues" element={<IssuesPage />} />
 
             <Route path="/reports" element={<ReportsPage />} />

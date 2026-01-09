@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { authService } from '../../../services/authService';
 import { useAuthContext } from '../../../contexts/AuthContext';
 import { toast } from '../../../utils/toast';
+import { NavigationManager } from '../../../utils/navigation';
 import { REGISTER_FORM_DEFAULTS, REGISTER_MESSAGES } from './Register.constants';
 
 export interface RegisterFormData {
@@ -26,7 +27,7 @@ export interface UseRegisterFormReturn {
 
 export function useRegisterForm(): UseRegisterFormReturn {
   const navigate = useNavigate();
-  const { setUser, user } = useAuthContext();
+  const { setUser } = useAuthContext();
   const [formData, setFormData] = useState<RegisterFormData>({
     fullName: REGISTER_FORM_DEFAULTS.fullName,
     companyName: REGISTER_FORM_DEFAULTS.companyName,
@@ -61,8 +62,8 @@ export function useRegisterForm(): UseRegisterFormReturn {
     setError('');
     
     try {
-      // Get user ID from auth context (decoded from token during login)
-      const userId = user?.id;
+      // Get user ID from localStorage using NavigationManager utility
+      const userId = NavigationManager.getUserId();
       
       if (!userId) {
         setError('User not authenticated. Please log in first.');
@@ -91,8 +92,8 @@ export function useRegisterForm(): UseRegisterFormReturn {
         // Show success message
         toast.success('Profile updated successfully!');
         
-        // Navigate to projects page
-        navigate('/projects');
+        // Use NavigationManager to handle navigation based on requiresSetup
+        NavigationManager.handlePostUserUpdateNavigation(response, navigate);
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Profile update failed';

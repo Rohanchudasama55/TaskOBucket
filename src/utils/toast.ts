@@ -1,40 +1,50 @@
-import { store } from '../redux/store'
-import { addNotification } from '../redux/notificationSlice'
+import { store } from '../redux/store';
+import { addNotification } from '../redux/notificationSlice';
+import type { ToastType } from '../components/common/Toast/Toast.types';
 
+/**
+ * Toast utility functions for displaying notifications
+ */
 export const toast = {
-  success: (message: string, title?: string, duration?: number) => {
+  success: (message: string, title?: string) => {
     store.dispatch(addNotification({
-      type: 'success',
+      id: Date.now().toString(),
+      type: 'success' as ToastType,
+      title: title || 'Success',
       message,
-      title,
-      duration
-    }))
+      duration: 5000
+    }));
   },
-  
-  error: (message: string, title?: string, duration?: number) => {
+
+  error: (message: string, title?: string) => {
     store.dispatch(addNotification({
-      type: 'error',
+      id: Date.now().toString(),
+      type: 'error' as ToastType,
+      title: title || 'Error',
       message,
-      title,
-      duration
-    }))
+      duration: 5000
+    }));
   },
-  
-  warning: (message: string, title?: string, duration?: number) => {
+
+  warning: (message: string, title?: string) => {
     store.dispatch(addNotification({
-      type: 'warning',
+      id: Date.now().toString(),
+      type: 'warning' as ToastType,
+      title: title || 'Warning',
       message,
-      title,
-      duration
-    }))
+      duration: 5000
+    }));
   },
-  
-  info: (message: string, title?: string, duration?: number) => {
+
+  info: (message: string, title?: string) => {
     store.dispatch(addNotification({
-      type: 'info',
+      id: Date.now().toString(),
+      type: 'info' as ToastType,
+      title: title || 'Info',
       message,
-      title,
-      duration
-    }))
+      duration: 5000
+    }));
   }
-}
+};
+
+export default toast;

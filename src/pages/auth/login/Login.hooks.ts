@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLogin } from '../../../hooks/useAuth';
 import { LOGIN_FORM_DEFAULTS } from './Login.constants';
+import { NavigationManager, type AuthState } from '../../../utils/navigation';
+import { storage } from '../../../utils';
 
 export interface LoginFormData {
   email: string;
@@ -61,20 +63,20 @@ export function useLoginForm(): UseLoginFormReturn {
         email: formData.email,
         password: formData.password
       });
-      console.log('Login successful:', response);
-      console.log('requiresSetup value:', response.result?.requiresSetup);
+      const setupStep = response?.result?.setupStep;
       
-      // Small delay to ensure auth state is updated
-      setTimeout(() => {
-        // Redirect based on requiresSetup flag
-        if (response.result?.requiresSetup) {
-          console.log('Redirecting to create organization...');
-          navigate('/auth/register', { replace: true });
-        } else {
-          console.log('Redirecting to projects...');
-          navigate('/projects', { replace: true });
-        }
-      }, 100);
+      // Create auth state object
+      const authState: AuthState = {
+        user: response,
+        setupStep,
+        isAuthenticated: true
+      };
+
+      // Persist authentication state
+      storage.set('authState', authState);
+      storage.set('user', response);
+      // Handle post-login navigation using NavigationManager
+      NavigationManager.handlePostLoginNavigation(response, navigate);
     } catch (err: any) {
       console.error('Login error:', err);
       setError(err.message || 'Login failed. Please try again.');

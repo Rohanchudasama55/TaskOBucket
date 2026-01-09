@@ -7,6 +7,9 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
+    env: {
+      VITE_ENCRYPTION_KEY: 'test-encryption-key-for-vitest-testing'
+    }
   },
   esbuild: {
     target: 'node14'

@@ -1,0 +1,1 @@
+export { SecureStorage, storage } from './localStorage';
