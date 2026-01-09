@@ -1,19 +1,19 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import {
-  LoginPage,
-  RegisterPage,
-  DashboardPage,
-  BoardPage,
-  IssuesPage,
-  CreateOrganizationPage,
-  NotFoundPage,
-} from "../pages";
 import { ProtectedRoute } from "../components/auth/ProtectedRoute";
 import { MainLayout } from "../layouts/MainLayout";
-import { ForgotPasswordPage, ResetPasswordPage } from "../pages/auth";
+import {
+  ForgotPasswordPage,
+  LoginPage,
+  RegisterPage,
+  ResetPasswordPage,
+} from "../pages/auth";
 import TeamsPage from "../pages/team/Teams.page";
 import { ReportsPage } from "../pages/Analysis";
 import { AcceptInvitePage } from "../pages/accept-invite";
+import { DashboardPage } from "../pages/dashboard";
+import { BoardPage, IssuesPage } from "../pages/projects";
+import { CreateOrganizationPage } from "../pages/settings";
+import { NotFoundPage } from "../pages/common";
 
 export function AppRoutes() {
   return (
