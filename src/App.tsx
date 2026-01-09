@@ -1,15 +1,9 @@
 
 import './App.css'
 import { AppRoutes } from './routes/AppRoutes'
-import { ToastContainer } from './components/common/ToastContainer'
 
 function App() {
-  return (
-    <>
-      <AppRoutes />
-      <ToastContainer />
-    </>
-  )
+  return <AppRoutes />
 }
 
 export default App

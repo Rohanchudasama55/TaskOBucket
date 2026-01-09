@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Modal } from '../../components/ui/Modal'
+import { Modal } from '../../components/Modal'
 import type { Issue } from '../../types/issue'
 import type { CreateIssueRequest, UpdateIssueRequest } from './issueApi'
 
