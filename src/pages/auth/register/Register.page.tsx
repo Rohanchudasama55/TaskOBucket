@@ -3,7 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { Star, CheckCircle } from "lucide-react";
 import { Button } from "../../../components/ui/Button";
 import { Input } from "../../../components/ui/Input";
-import { PREVIEW_USERS, TASKS, REGISTER_LABELS, REGISTER_PLACEHOLDERS, REGISTER_MESSAGES } from "./Register.constants";
+import {
+  PREVIEW_USERS,
+  TASKS,
+  REGISTER_LABELS,
+  REGISTER_PLACEHOLDERS,
+  REGISTER_MESSAGES,
+} from "./Register.constants";
 import { useRegisterForm } from "./Register.hooks";
 
 const RegisterPage: React.FC = () => {
@@ -18,7 +24,6 @@ const RegisterPage: React.FC = () => {
     handleSubmit,
   } = useRegisterForm();
 
-
   return (
     <section className="flex justify-center items-center">
       <div className="min-h-screen grid lg:grid-cols-2 bg-gradient-to-br from-gray-50 via-white to-blue-50 overflow-hidden">
@@ -26,9 +31,8 @@ const RegisterPage: React.FC = () => {
         <div className="hidden lg:flex flex-col justify-center px-20 relative">
           <div className="max-w-xl space-y-8">
             <h1 className="text-5xl font-extrabold leading-tight text-gray-900">
-              Start managing 
-
-              projects <span className="text-blue-600">better today</span>
+              Start managing projects{" "}
+              <span className="text-blue-600">better today</span>
             </h1>
 
             <p className="text-lg text-gray-600">
@@ -96,10 +100,10 @@ const RegisterPage: React.FC = () => {
         <div className="flex items-center justify-center px-6 lg:px-16">
           <div className="w-full max-w-lg">
             <div className="bg-white rounded-3xl shadow-2xl p-10 border">
-              <h2 className="text-3xl font-bold mb-2">{REGISTER_MESSAGES.title}</h2>
-              <p className="text-gray-600 mb-8">
-                {REGISTER_MESSAGES.subtitle}
-              </p>
+              <h2 className="text-3xl font-bold mb-2">
+                {REGISTER_MESSAGES.title}
+              </h2>
+              <p className="text-gray-600 mb-8">{REGISTER_MESSAGES.subtitle}</p>
 
               {error && (
                 <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -109,7 +113,9 @@ const RegisterPage: React.FC = () => {
 
               <form className="space-y-5" onSubmit={handleSubmit}>
                 <div>
-                  <label className="text-sm font-medium">{REGISTER_LABELS.fullName}</label>
+                  <label className="text-sm font-medium">
+                    {REGISTER_LABELS.fullName}
+                  </label>
                   <Input
                     name="fullName"
                     value={formData.fullName}
@@ -120,7 +126,9 @@ const RegisterPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium">{REGISTER_LABELS.companyName}</label>
+                  <label className="text-sm font-medium">
+                    {REGISTER_LABELS.companyName}
+                  </label>
                   <Input
                     name="companyName"
                     value={formData.companyName}
@@ -131,7 +139,9 @@ const RegisterPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium">{REGISTER_LABELS.email}</label>
+                  <label className="text-sm font-medium">
+                    {REGISTER_LABELS.email}
+                  </label>
                   <Input
                     name="email"
                     type="email"
@@ -142,7 +152,6 @@ const RegisterPage: React.FC = () => {
                   />
                 </div>
 
-
                 <div className="flex items-center space-x-2">
                   <input
                     type="checkbox"
@@ -151,7 +160,10 @@ const RegisterPage: React.FC = () => {
                     onChange={handleTermsChange}
                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
                   />
-                  <label htmlFor="acceptTerms" className="text-sm text-gray-600">
+                  <label
+                    htmlFor="acceptTerms"
+                    className="text-sm text-gray-600"
+                  >
                     {REGISTER_MESSAGES.agreeToTerms}{" "}
                     <span className="text-blue-600 hover:underline cursor-pointer">
                       {REGISTER_MESSAGES.termsOfService}
@@ -168,15 +180,17 @@ const RegisterPage: React.FC = () => {
                   disabled={!acceptTerms || isLoading}
                   className="w-full h-12 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition disabled:opacity-50"
                 >
-                  {isLoading ? REGISTER_MESSAGES.creatingAccount : REGISTER_MESSAGES.createAccount}
+                  {isLoading
+                    ? REGISTER_MESSAGES.creatingAccount
+                    : REGISTER_MESSAGES.createAccount}
                 </Button>
               </form>
 
               <p className="text-center text-sm mt-6 text-gray-600">
                 {REGISTER_MESSAGES.alreadyHaveAccount}{" "}
-                <span 
+                <span
                   className="text-blue-600 font-medium cursor-pointer hover:underline"
-                  onClick={() => navigate('/login')}
+                  onClick={() => navigate("/login")}
                 >
                   {REGISTER_MESSAGES.logIn}
                 </span>

@@ -1,19 +1,10 @@
-// Auth pages
-export { LoginPage, RegisterPage, ForgotPasswordPage, ResetPasswordPage } from './auth';
-export type { LoginFormData, RegisterFormData } from './auth';
-
-// Dashboard pages
-export { DashboardPage } from "./dashboard";
-export type { DashboardData } from "./dashboard";
-
-// Project pages
-export { BoardPage, IssuesPage } from "./projects";
-export type { Task } from "./projects";
-// Settings pages
-export { CreateOrganizationPage } from "./settings";
-
-// Team pages
-export { TeamsMember } from "./team";
-
-// Common pages
-export { NotFoundPage } from "./common";
+export { default as TeamsPage } from "./team/Teams.page";
+export { TeamsMember } from "./team/Teams.member";
+export { useTeamsPage } from "./team/Teams.hooks";
+export * from "./team/Teams.hooks";
+export * from "./team/Teams.constants";
+export { InviteModal } from "./team/InviteModal";
+export { useInviteModal } from "./team/InviteModal.hooks";
+export * from "./team/InviteModal.constants";
+export * from "./team/InviteModal.types";
+export { StatusBadge, RoleSelect, MemberRow } from "./team/Teams.component";

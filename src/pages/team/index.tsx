@@ -1,1 +1,1 @@
-export  { TeamsMember } from "./Teams.member.tsx";
+export { TeamsMember } from "./Teams.member.tsx";
