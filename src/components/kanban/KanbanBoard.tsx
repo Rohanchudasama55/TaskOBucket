@@ -123,7 +123,7 @@ const mockIssues: KanbanIssue[] = [
     },
     labels: ['backend', 'performance'],
     order: 0
-  }
+  },
 ];
 
 interface KanbanBoardProps {
@@ -138,7 +138,7 @@ export function KanbanBoard({ projectTitle = 'Project Alpha Board' }: KanbanBoar
   const [activeIssue, setActiveIssue] = useState<KanbanIssue | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState<KanbanIssue | null>(null);
-  const [createModalDefaultStatus, setCreateModalDefaultStatus] = useState<'backlog' | 'selected' | 'in-progress'>('backlog');
+  const [createModalDefaultStatus, setCreateModalDefaultStatus] = useState<'backlog' | 'selected' | 'in-progress' | 'completed'>('backlog');
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -184,6 +184,12 @@ export function KanbanBoard({ projectTitle = 'Project Alpha Board' }: KanbanBoar
       title: 'IN PROGRESS',
       status: 'in-progress',
       issues: filteredIssues.filter(issue => issue.status === 'in-progress').sort((a, b) => (a.order || 0) - (b.order || 0))
+    },
+    {
+      id: 'completed',
+      title: 'COMPLETED',
+      status: 'completed',
+      issues: filteredIssues.filter(issue => issue.status === 'completed').sort((a, b) => (a.order || 0) - (b.order || 0))
     }
   ];
 
@@ -284,7 +290,8 @@ export function KanbanBoard({ projectTitle = 'Project Alpha Board' }: KanbanBoar
     const statusMap = {
       'backlog': 'backlog' as const,
       'selected': 'selected' as const,
-      'in-progress': 'in-progress' as const
+      'in-progress': 'in-progress' as const,
+      'completed': 'completed' as const
     };
     setCreateModalDefaultStatus(statusMap[columnId as keyof typeof statusMap] || 'backlog');
     setIsCreateModalOpen(true);
@@ -435,3 +442,6 @@ export function KanbanBoard({ projectTitle = 'Project Alpha Board' }: KanbanBoar
     </div>
   );
 }
+
+
+

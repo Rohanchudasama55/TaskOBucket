@@ -10,7 +10,7 @@ import type {
   UserUpdateResponse,
 } from "../types/auth";
 
-const API_BASE_URL = "https://cfc7af127877.ngrok-free.app/api";
+const API_BASE_URL = "https://40854664e1e2.ngrok-free.app/api";
 
 // Create axios instance with default config
 const authApi = axios.create({
@@ -96,8 +96,9 @@ export const authService = {
     }
   },
   acceptInvite: async (data: ResetPasswordRequest): Promise<ResetPasswordResponse> => {
+    console.log(data, "bbb")
     try {
-      const response = await authApi.put<ResetPasswordResponse>('/user/accept-invite?token=${data.token}', data);
+      const response = await authApi.put<ResetPasswordResponse>(`/user/accept-invite?token=${data.token}`, data);
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {

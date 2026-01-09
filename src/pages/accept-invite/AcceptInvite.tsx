@@ -4,14 +4,12 @@ import {
   CheckCircle,
   AlertTriangle,
 } from "lucide-react";
-import {
-  useResetPasswordForm,
-} from "../auth/reset-password";
 import { useAuthState } from "../../hooks/useAuth";
 import { Input } from "../../components/ui/Input";
 import { Button } from "../../components/ui/Button";
 import { Alert } from "../../components/ui/Alert";
 import { ACCEPT_INVITE_MESSAGES, ACCEPT_INVITE_PLACEHOLDERS } from "./Constant";
+import { useAcceptInviteForm } from "./AcceptInvite.hooks";
 
 export function AcceptInvitePage() {
   const { isAuthenticated, isLoading: authLoading } = useAuthState();
@@ -25,7 +23,7 @@ export function AcceptInvitePage() {
     handleNewPasswordChange,
     handleConfirmPasswordChange,
     handleSubmit,
-  } = useResetPasswordForm();
+  } = useAcceptInviteForm();
 
   // Redirect if already authenticated
   if (authLoading) {

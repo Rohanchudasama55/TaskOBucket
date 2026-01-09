@@ -6,7 +6,7 @@ interface CreateIssueModalProps {
   isOpen: boolean;
   onClose: () => void;
   onCreateIssue: (issue: Omit<KanbanIssue, 'id' | 'order'>) => void;
-  defaultStatus?: 'backlog' | 'selected' | 'in-progress';
+  defaultStatus?: 'backlog' | 'selected' | 'in-progress' | 'completed';
 }
 
 const issueTypes = [
@@ -166,6 +166,7 @@ export function CreateIssueModal({ isOpen, onClose, onCreateIssue, defaultStatus
               <option value="backlog">Backlog</option>
               <option value="selected">Selected for Dev</option>
               <option value="in-progress">In Progress</option>
+              <option value="completed">Completed</option>
             </select>
           </div>
 

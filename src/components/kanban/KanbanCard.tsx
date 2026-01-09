@@ -1,4 +1,4 @@
-import { MoreHorizontal, CheckCircle2, AlertCircle, Circle } from 'lucide-react';
+import { MoreHorizontal, CheckCircle2, Circle,  Loader2, Clock } from 'lucide-react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { KanbanIssue } from '../../types/kanban';
@@ -25,8 +25,9 @@ const issueTypeConfig = {
 
 const statusIcons = {
   backlog: Circle,
-  selected: AlertCircle,
-  'in-progress': CheckCircle2
+  selected: Clock,
+  'in-progress': Loader2,
+  completed:CheckCircle2
 };
 
 export function KanbanCard({ issue, onCardClick }: KanbanCardProps) {
