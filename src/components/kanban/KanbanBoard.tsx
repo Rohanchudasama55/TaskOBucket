@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   DndContext,
   DragOverlay,
@@ -6,139 +6,150 @@ import {
   useSensor,
   useSensors,
   closestCenter,
-} from '@dnd-kit/core';
+} from "@dnd-kit/core";
 import type {
   DragEndEvent,
   DragOverEvent,
   DragStartEvent,
-} from '@dnd-kit/core';
-import { arrayMove } from '@dnd-kit/sortable';
-import type { KanbanColumn, KanbanIssue, BoardFilters, ViewMode } from '../../types/kanban';
-import { BoardHeader } from './BoardHeader';
-import { BoardFilters as BoardFiltersComponent } from './BoardFilters';
-import { KanbanColumn as KanbanColumnComponent } from './KanbanColumn';
-import { EmptyBoardState } from './EmptyBoardState';
-import { KanbanCard } from './KanbanCard';
-import { CreateIssueModal } from './CreateIssueModal';
-import { IssueDetailModal } from './IssueDetailModal';
+} from "@dnd-kit/core";
+import { arrayMove } from "@dnd-kit/sortable";
+import type {
+  KanbanColumn,
+  KanbanIssue,
+  BoardFilters,
+  ViewMode,
+} from "../../types/kanban";
+import { BoardHeader } from "./BoardHeader";
+import { BoardFilters as BoardFiltersComponent } from "./BoardFilters";
+import { KanbanColumn as KanbanColumnComponent } from "./KanbanColumn";
+import { EmptyBoardState } from "./EmptyBoardState";
+import { KanbanCard } from "./KanbanCard";
+// import { CreateIssueModal } from './CreateIssueModal';
+import { IssueDetailModal } from "./IssueDetailModal";
+import { CreateIssueModal } from "../../pages/issues/CreateIssueModal";
 
 // Mock data
 const mockIssues: KanbanIssue[] = [
   {
-    id: '1',
-    key: 'PROJ-105',
-    title: 'Implement user authentication system',
-    type: 'story',
-    status: 'backlog',
+    id: "1",
+    key: "PROJ-105",
+    title: "Implement user authentication system",
+    type: "story",
+    status: "backlog",
     assignee: {
-      id: '1',
-      name: 'John Doe',
-      avatar: 'https://i.pravatar.cc/100?img=1'
+      id: "1",
+      name: "John Doe",
+      avatar: "https://i.pravatar.cc/100?img=1",
     },
-    labels: ['frontend', 'security'],
-    epic: 'user-authentication',
-    order: 0
+    labels: ["frontend", "security"],
+    epic: "user-authentication",
+    order: 0,
   },
   {
-    id: '2',
-    key: 'PROJ-106',
-    title: 'Design login page mockups',
-    type: 'task',
-    status: 'backlog',
+    id: "2",
+    key: "PROJ-106",
+    title: "Design login page mockups",
+    type: "task",
+    status: "backlog",
     assignee: {
-      id: '2',
-      name: 'Jane Smith',
-      avatar: 'https://i.pravatar.cc/100?img=2'
+      id: "2",
+      name: "Jane Smith",
+      avatar: "https://i.pravatar.cc/100?img=2",
     },
-    labels: ['ui-ux'],
-    image: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400&h=200&fit=crop',
-    order: 1
+    labels: ["ui-ux"],
+    image:
+      "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400&h=200&fit=crop",
+    order: 1,
   },
   {
-    id: '3',
-    key: 'PROJ-107',
-    title: 'Fix navigation menu bug on mobile',
-    type: 'bug',
-    status: 'backlog',
+    id: "3",
+    key: "PROJ-107",
+    title: "Fix navigation menu bug on mobile",
+    type: "bug",
+    status: "backlog",
     assignee: {
-      id: '3',
-      name: 'Mike Johnson',
-      avatar: 'https://i.pravatar.cc/100?img=3'
+      id: "3",
+      name: "Mike Johnson",
+      avatar: "https://i.pravatar.cc/100?img=3",
     },
-    labels: ['mobile', 'bug-fix'],
-    order: 2
+    labels: ["mobile", "bug-fix"],
+    order: 2,
   },
   {
-    id: '4',
-    key: 'PROJ-108',
-    title: 'Add password reset functionality',
-    type: 'story',
-    status: 'backlog',
+    id: "4",
+    key: "PROJ-108",
+    title: "Add password reset functionality",
+    type: "story",
+    status: "backlog",
     assignee: {
-      id: '1',
-      name: 'John Doe',
-      avatar: 'https://i.pravatar.cc/100?img=1'
+      id: "1",
+      name: "John Doe",
+      avatar: "https://i.pravatar.cc/100?img=1",
     },
-    labels: ['backend'],
-    order: 3
+    labels: ["backend"],
+    order: 3,
   },
   {
-    id: '5',
-    key: 'PROJ-109',
-    title: 'Update API documentation',
-    type: 'task',
-    status: 'selected',
+    id: "5",
+    key: "PROJ-109",
+    title: "Update API documentation",
+    type: "task",
+    status: "selected",
     assignee: {
-      id: '4',
-      name: 'Sarah Wilson',
-      avatar: 'https://i.pravatar.cc/100?img=4'
+      id: "4",
+      name: "Sarah Wilson",
+      avatar: "https://i.pravatar.cc/100?img=4",
     },
-    labels: ['documentation'],
-    order: 0
+    labels: ["documentation"],
+    order: 0,
   },
   {
-    id: '6',
-    key: 'PROJ-110',
-    title: 'Implement dashboard analytics',
-    type: 'story',
-    status: 'selected',
+    id: "6",
+    key: "PROJ-110",
+    title: "Implement dashboard analytics",
+    type: "story",
+    status: "selected",
     assignee: {
-      id: '2',
-      name: 'Jane Smith',
-      avatar: 'https://i.pravatar.cc/100?img=2'
+      id: "2",
+      name: "Jane Smith",
+      avatar: "https://i.pravatar.cc/100?img=2",
     },
-    labels: ['frontend', 'analytics'],
-    order: 1
+    labels: ["frontend", "analytics"],
+    order: 1,
   },
   {
-    id: '7',
-    key: 'PROJ-111',
-    title: 'Optimize database queries',
-    type: 'task',
-    status: 'in-progress',
+    id: "7",
+    key: "PROJ-111",
+    title: "Optimize database queries",
+    type: "task",
+    status: "in-progress",
     assignee: {
-      id: '3',
-      name: 'Mike Johnson',
-      avatar: 'https://i.pravatar.cc/100?img=3'
+      id: "3",
+      name: "Mike Johnson",
+      avatar: "https://i.pravatar.cc/100?img=3",
     },
-    labels: ['backend', 'performance'],
-    order: 0
-  }
+    labels: ["backend", "performance"],
+    order: 0,
+  },
 ];
 
 interface KanbanBoardProps {
   projectTitle?: string;
 }
 
-export function KanbanBoard({ projectTitle = 'Project Alpha Board' }: KanbanBoardProps) {
-  const [viewMode, setViewMode] = useState<ViewMode>('kanban');
+export function KanbanBoard({
+  projectTitle = "Project Alpha Board",
+}: KanbanBoardProps) {
+  const [viewMode, setViewMode] = useState<ViewMode>("kanban");
   const [filters, setFilters] = useState<BoardFilters>({});
   const [issues, setIssues] = useState<KanbanIssue[]>([]);
   const [showEmptyState, setShowEmptyState] = useState(false);
   const [activeIssue, setActiveIssue] = useState<KanbanIssue | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState<KanbanIssue | null>(null);
-  const [createModalDefaultStatus, setCreateModalDefaultStatus] = useState<'backlog' | 'selected' | 'in-progress'>('backlog');
+  const [createModalDefaultStatus, setCreateModalDefaultStatus] = useState<
+    "backlog" | "selected" | "in-progress"
+  >("backlog");
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -158,8 +169,9 @@ export function KanbanBoard({ projectTitle = 'Project Alpha Board' }: KanbanBoar
   }, [showEmptyState]);
 
   // Filter issues based on current filters
-  const filteredIssues = (showEmptyState ? [] : issues).filter(issue => {
-    if (filters.assignee && issue.assignee?.id !== filters.assignee) return false;
+  const filteredIssues = (showEmptyState ? [] : issues).filter((issue) => {
+    if (filters.assignee && issue.assignee?.id !== filters.assignee)
+      return false;
     if (filters.epic && issue.epic !== filters.epic) return false;
     if (filters.label && !issue.labels?.includes(filters.label)) return false;
     return true;
@@ -168,53 +180,59 @@ export function KanbanBoard({ projectTitle = 'Project Alpha Board' }: KanbanBoar
   // Group issues by status
   const columns: KanbanColumn[] = [
     {
-      id: 'backlog',
-      title: 'BACKLOG',
-      status: 'backlog',
-      issues: filteredIssues.filter(issue => issue.status === 'backlog').sort((a, b) => (a.order || 0) - (b.order || 0))
+      id: "backlog",
+      title: "BACKLOG",
+      status: "backlog",
+      issues: filteredIssues
+        .filter((issue) => issue.status === "backlog")
+        .sort((a, b) => (a.order || 0) - (b.order || 0)),
     },
     {
-      id: 'selected',
-      title: 'SELECTED FOR DEV',
-      status: 'selected',
-      issues: filteredIssues.filter(issue => issue.status === 'selected').sort((a, b) => (a.order || 0) - (b.order || 0))
+      id: "selected",
+      title: "SELECTED FOR DEV",
+      status: "selected",
+      issues: filteredIssues
+        .filter((issue) => issue.status === "selected")
+        .sort((a, b) => (a.order || 0) - (b.order || 0)),
     },
     {
-      id: 'in-progress',
-      title: 'IN PROGRESS',
-      status: 'in-progress',
-      issues: filteredIssues.filter(issue => issue.status === 'in-progress').sort((a, b) => (a.order || 0) - (b.order || 0))
-    }
+      id: "in-progress",
+      title: "IN PROGRESS",
+      status: "in-progress",
+      issues: filteredIssues
+        .filter((issue) => issue.status === "in-progress")
+        .sort((a, b) => (a.order || 0) - (b.order || 0)),
+    },
   ];
 
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event;
-    const issue = issues.find(issue => issue.id === active.id);
+    const issue = issues.find((issue) => issue.id === active.id);
     setActiveIssue(issue || null);
   };
 
   const handleDragOver = (event: DragOverEvent) => {
     const { active, over } = event;
-    
+
     if (!over) return;
 
     const activeId = active.id;
     const overId = over.id;
 
     // Find the active issue
-    const activeIssue = issues.find(issue => issue.id === activeId);
+    const activeIssue = issues.find((issue) => issue.id === activeId);
     if (!activeIssue) return;
 
     // Check if we're dropping over a column
-    const overColumn = columns.find(col => col.id === overId);
+    const overColumn = columns.find((col) => col.id === overId);
     if (overColumn && activeIssue.status !== overColumn.status) {
-      setIssues(prevIssues => {
-        return prevIssues.map(issue => {
+      setIssues((prevIssues) => {
+        return prevIssues.map((issue) => {
           if (issue.id === activeId) {
             return {
               ...issue,
               status: overColumn.status,
-              order: overColumn.issues.length
+              order: overColumn.issues.length,
             };
           }
           return issue;
@@ -233,33 +251,35 @@ export function KanbanBoard({ projectTitle = 'Project Alpha Board' }: KanbanBoar
     const overId = over.id;
 
     // Find the active issue
-    const activeIssue = issues.find(issue => issue.id === activeId);
+    const activeIssue = issues.find((issue) => issue.id === activeId);
     if (!activeIssue) return;
 
     // Find which column the active issue belongs to
-    const activeColumn = columns.find(col => 
-      col.issues.some(issue => issue.id === activeId)
+    const activeColumn = columns.find((col) =>
+      col.issues.some((issue) => issue.id === activeId)
     );
 
     // Find the over issue
-    const overIssue = issues.find(issue => issue.id === overId);
-    
+    const overIssue = issues.find((issue) => issue.id === overId);
+
     if (activeColumn && overIssue && activeIssue.status === overIssue.status) {
       // Reordering within the same column
       const columnIssues = activeColumn.issues;
-      const oldIndex = columnIssues.findIndex(issue => issue.id === activeId);
-      const newIndex = columnIssues.findIndex(issue => issue.id === overId);
+      const oldIndex = columnIssues.findIndex((issue) => issue.id === activeId);
+      const newIndex = columnIssues.findIndex((issue) => issue.id === overId);
 
       if (oldIndex !== newIndex) {
         const reorderedIssues = arrayMove(columnIssues, oldIndex, newIndex);
-        
-        setIssues(prevIssues => {
-          return prevIssues.map(issue => {
-            const reorderedIssue = reorderedIssues.find(ri => ri.id === issue.id);
+
+        setIssues((prevIssues) => {
+          return prevIssues.map((issue) => {
+            const reorderedIssue = reorderedIssues.find(
+              (ri) => ri.id === issue.id
+            );
             if (reorderedIssue) {
               return {
                 ...issue,
-                order: reorderedIssues.indexOf(reorderedIssue)
+                order: reorderedIssues.indexOf(reorderedIssue),
               };
             }
             return issue;
@@ -270,23 +290,25 @@ export function KanbanBoard({ projectTitle = 'Project Alpha Board' }: KanbanBoar
   };
 
   const handleCreateIssue = () => {
-    setCreateModalDefaultStatus('backlog');
+    setCreateModalDefaultStatus("backlog");
     setIsCreateModalOpen(true);
   };
 
   const handleImportIssues = () => {
     // Load demo data
     setIssues(mockIssues);
-    console.log('Demo issues imported');
+    console.log("Demo issues imported");
   };
 
   const handleAddIssue = (columnId: string) => {
     const statusMap = {
-      'backlog': 'backlog' as const,
-      'selected': 'selected' as const,
-      'in-progress': 'in-progress' as const
+      backlog: "backlog" as const,
+      selected: "selected" as const,
+      "in-progress": "in-progress" as const,
     };
-    setCreateModalDefaultStatus(statusMap[columnId as keyof typeof statusMap] || 'backlog');
+    setCreateModalDefaultStatus(
+      statusMap[columnId as keyof typeof statusMap] || "backlog"
+    );
     setIsCreateModalOpen(true);
   };
 
@@ -294,25 +316,27 @@ export function KanbanBoard({ projectTitle = 'Project Alpha Board' }: KanbanBoar
     setSelectedIssue(issue);
   };
 
-  const handleCreateNewIssue = (newIssueData: Omit<KanbanIssue, 'id' | 'order'>) => {
+  const handleCreateNewIssue = (
+    newIssueData: Omit<KanbanIssue, "id" | "order">
+  ) => {
     const newIssue: KanbanIssue = {
       ...newIssueData,
       id: Date.now().toString(),
-      order: issues.filter(i => i.status === newIssueData.status).length
+      order: issues.filter((i) => i.status === newIssueData.status).length,
     };
-    
-    setIssues(prev => [...prev, newIssue]);
+
+    setIssues((prev) => [...prev, newIssue]);
   };
 
   const handleUpdateIssue = (updatedIssue: KanbanIssue) => {
-    setIssues(prev => prev.map(issue => 
-      issue.id === updatedIssue.id ? updatedIssue : issue
-    ));
+    setIssues((prev) =>
+      prev.map((issue) => (issue.id === updatedIssue.id ? updatedIssue : issue))
+    );
     setSelectedIssue(null);
   };
 
   const handleDeleteIssue = (issueId: string) => {
-    setIssues(prev => prev.filter(issue => issue.id !== issueId));
+    setIssues((prev) => prev.filter((issue) => issue.id !== issueId));
     setSelectedIssue(null);
   };
 
@@ -331,7 +355,7 @@ export function KanbanBoard({ projectTitle = 'Project Alpha Board' }: KanbanBoar
           onClick={() => setShowEmptyState(!showEmptyState)}
           className="text-sm font-medium text-blue-600 hover:text-blue-700 bg-blue-50/50 hover:bg-blue-100/50 px-3 py-1.5 rounded-lg transition-all duration-200"
         >
-          {showEmptyState ? 'Load Demo Data' : 'Show Empty State'}
+          {showEmptyState ? "Load Demo Data" : "Show Empty State"}
         </button>
         <span className="text-slate-300">|</span>
         <button
@@ -353,7 +377,7 @@ export function KanbanBoard({ projectTitle = 'Project Alpha Board' }: KanbanBoar
         onCreateIssue={handleCreateIssue}
       />
 
-      {viewMode === 'kanban' && (
+      {viewMode === "kanban" && (
         <>
           <BoardFiltersComponent
             filters={filters}
@@ -378,11 +402,13 @@ export function KanbanBoard({ projectTitle = 'Project Alpha Board' }: KanbanBoar
                   />
                 ))}
               </div>
-              
-              <DragOverlay dropAnimation={{
-                duration: 300,
-                easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)',
-              }}>
+
+              <DragOverlay
+                dropAnimation={{
+                  duration: 300,
+                  easing: "cubic-bezier(0.18, 0.67, 0.6, 1.22)",
+                }}
+              >
                 {activeIssue ? (
                   <div className="rotate-3 scale-105 opacity-95 shadow-2xl">
                     <KanbanCard issue={activeIssue} />
@@ -399,7 +425,7 @@ export function KanbanBoard({ projectTitle = 'Project Alpha Board' }: KanbanBoar
         </>
       )}
 
-      {viewMode === 'list' && (
+      {viewMode === "list" && (
         <div className="text-center py-16">
           <div className="w-16 h-16 mx-auto mb-4 bg-slate-100 rounded-2xl flex items-center justify-center">
             <div className="w-8 h-8 bg-slate-300 rounded animate-pulse"></div>
@@ -408,12 +434,14 @@ export function KanbanBoard({ projectTitle = 'Project Alpha Board' }: KanbanBoar
         </div>
       )}
 
-      {viewMode === 'timeline' && (
+      {viewMode === "timeline" && (
         <div className="text-center py-16">
           <div className="w-16 h-16 mx-auto mb-4 bg-slate-100 rounded-2xl flex items-center justify-center">
             <div className="w-8 h-8 bg-slate-300 rounded animate-pulse"></div>
           </div>
-          <p className="text-slate-600 font-medium">Timeline view coming soon...</p>
+          <p className="text-slate-600 font-medium">
+            Timeline view coming soon...
+          </p>
         </div>
       )}
 
