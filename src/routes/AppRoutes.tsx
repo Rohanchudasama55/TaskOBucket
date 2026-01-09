@@ -14,6 +14,7 @@ import { DashboardPage } from "../pages/dashboard";
 import { BoardPage } from "../pages/projects";
 import { CreateOrganizationPage } from "../pages/settings";
 import { NotFoundPage } from "../pages/common";
+import { IssuesPage } from "../pages/issues";
 
 export function AppRoutes() {
   return (
@@ -42,7 +43,7 @@ export function AppRoutes() {
 
             <Route path="/projects" element={<BoardPage />} />
 
-            {/* <Route path="/issues" element={<IssuesPage />} /> */}
+            <Route path="/issues" element={<IssuesPage />} />
 
             <Route path="/reports" element={<ReportsPage />} />
 
