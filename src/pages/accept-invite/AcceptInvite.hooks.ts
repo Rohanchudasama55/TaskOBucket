@@ -27,7 +27,7 @@ export interface UseResetPasswordFormReturn {
 const PASSWORD_REGEX =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-export function useResetPasswordForm(): UseResetPasswordFormReturn {
+export function useAcceptInviteForm(): UseResetPasswordFormReturn {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 

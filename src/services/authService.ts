@@ -96,8 +96,9 @@ export const authService = {
     }
   },
   acceptInvite: async (data: ResetPasswordRequest): Promise<ResetPasswordResponse> => {
+    console.log(data, "bbb")
     try {
-      const response = await authApi.put<ResetPasswordResponse>('/user/accept-invite?token=${data.token}', data);
+      const response = await authApi.put<ResetPasswordResponse>(`/user/accept-invite?token=${data.token}`, data);
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {

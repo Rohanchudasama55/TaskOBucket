@@ -15,6 +15,7 @@ import { BoardPage } from "../pages/projects";
 import { CreateOrganizationPage } from "../pages/settings";
 import { NotFoundPage } from "../pages/common";
 import { IssuesPage } from "../pages/issues";
+import { SprintsPage } from "../pages/sprints";
 
 export function AppRoutes() {
   return (
@@ -42,6 +43,8 @@ export function AppRoutes() {
             <Route path="/board" element={<BoardPage />} />
 
             <Route path="/projects" element={<BoardPage />} />
+            
+            <Route path="/sprints" element={<SprintsPage />} />
 
             <Route path="/issues" element={<IssuesPage />} />
 

@@ -147,9 +147,7 @@ export function KanbanBoard({
   const [activeIssue, setActiveIssue] = useState<KanbanIssue | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState<KanbanIssue | null>(null);
-  const [createModalDefaultStatus, setCreateModalDefaultStatus] = useState<
-    "backlog" | "selected" | "in-progress"
-  >("backlog");
+  const [createModalDefaultStatus, setCreateModalDefaultStatus] = useState<'backlog' | 'selected' | 'in-progress' | 'completed'>('backlog');
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -196,13 +194,17 @@ export function KanbanBoard({
         .sort((a, b) => (a.order || 0) - (b.order || 0)),
     },
     {
-      id: "in-progress",
-      title: "IN PROGRESS",
-      status: "in-progress",
-      issues: filteredIssues
-        .filter((issue) => issue.status === "in-progress")
-        .sort((a, b) => (a.order || 0) - (b.order || 0)),
+      id: 'in-progress',
+      title: 'IN PROGRESS',
+      status: 'in-progress',
+      issues: filteredIssues.filter(issue => issue.status === 'in-progress').sort((a, b) => (a.order || 0) - (b.order || 0))
     },
+    {
+      id: 'completed',
+      title: 'COMPLETED',
+      status: 'completed',
+      issues: filteredIssues.filter(issue => issue.status === 'completed').sort((a, b) => (a.order || 0) - (b.order || 0))
+    }
   ];
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -302,9 +304,10 @@ export function KanbanBoard({
 
   const handleAddIssue = (columnId: string) => {
     const statusMap = {
-      backlog: "backlog" as const,
-      selected: "selected" as const,
-      "in-progress": "in-progress" as const,
+      'backlog': 'backlog' as const,
+      'selected': 'selected' as const,
+      'in-progress': 'in-progress' as const,
+      'completed': 'completed' as const
     };
     setCreateModalDefaultStatus(
       statusMap[columnId as keyof typeof statusMap] || "backlog"
@@ -463,3 +466,6 @@ export function KanbanBoard({
     </div>
   );
 }
+
+
+

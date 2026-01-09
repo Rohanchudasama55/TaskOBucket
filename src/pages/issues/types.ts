@@ -2,7 +2,7 @@
 
 import type { KanbanIssue } from "../../types/kanban";
 
-export type IssueStatus = "backlog" | "selected" | "in-progress";
+export type IssueStatus = "backlog" | "selected" | "in-progress" | "completed";
 export type IssueType = "story" | "task" | "bug";
 export type PriorityType = "high" | "medium" | "low";
 

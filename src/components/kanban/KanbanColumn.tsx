@@ -13,19 +13,22 @@ interface KanbanColumnProps {
 const columnColors = {
   backlog: 'from-slate-50 to-slate-100/50',
   selected: 'from-blue-50/50 to-indigo-50/30',
-  'in-progress': 'from-amber-50/50 to-orange-50/30'
+  'in-progress': 'from-amber-50/50 to-orange-50/30',
+  completed: 'from-emerald-50/50 to-green-50/30',
 };
 
 const columnAccents = {
   backlog: 'ring-slate-200/50',
   selected: 'ring-blue-200/50',
-  'in-progress': 'ring-amber-200/50'
+  'in-progress': 'ring-amber-200/50',
+  completed: 'ring-emerald-200/50',
 };
 
 const countBadgeColors = {
   backlog: 'bg-slate-100 text-slate-700 ring-slate-200/50',
   selected: 'bg-blue-100 text-blue-700 ring-blue-200/50',
-  'in-progress': 'bg-amber-100 text-amber-700 ring-amber-200/50'
+  'in-progress': 'bg-amber-100 text-amber-700 ring-amber-200/50',
+  completed: 'bg-emerald-100 text-emerald-700 ring-emerald-200/50',
 };
 
 export function KanbanColumn({ column, onAddIssue, onCardClick }: KanbanColumnProps) {

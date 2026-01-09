@@ -3,7 +3,7 @@ export interface KanbanIssue {
   key: string;
   title: string;
   type: 'story' | 'task' | 'bug';
-  status: 'backlog' | 'selected' | 'in-progress';
+  status: 'backlog' | 'selected' | 'in-progress' | 'completed';
   assignee?: {
     id: string;
     name: string;
@@ -19,7 +19,7 @@ export interface KanbanIssue {
 export interface KanbanColumn {
   id: string;
   title: string;
-  status: 'backlog' | 'selected' | 'in-progress';
+  status: 'backlog' | 'selected' | 'in-progress' | 'completed';
   issues: KanbanIssue[];
 }
 

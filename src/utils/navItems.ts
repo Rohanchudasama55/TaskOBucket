@@ -1,5 +1,5 @@
 import type { ComponentType } from "react";
-import {LayoutDashboard, FolderKanban, SquareKanban, FileBarChart , Users   } from "lucide-react";
+import {LayoutDashboard, FolderKanban, SquareKanban, FileBarChart , Users, Zap   } from "lucide-react";
 export type NavIcon = ComponentType<any>;
 
 interface SubNavItem {
@@ -29,6 +29,12 @@ export const navItems: NavItem[] = [
     icon: FolderKanban,
     path: "/projects",
     matchPaths: ["/projects"],
+  },
+  {
+    label: "Sprints",
+    icon: Zap,
+    path: "/sprints",
+    matchPaths: ["/sprints"],
   },
   {
     label: "Issues",
