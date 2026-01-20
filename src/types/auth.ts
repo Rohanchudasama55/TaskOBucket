@@ -10,7 +10,7 @@ export interface ForgotPasswordRequest {
 export interface ResetPasswordRequest {
   token: string;
   newPassword: string;
-  confirmPassword:string;
+  confirmPassword: string;
 }
 
 export interface LoginResponse {
@@ -20,7 +20,7 @@ export interface LoginResponse {
   result: {
     token: string;
     name: string;
-    requiresSetup: boolean;
+    setupStep?: number;
   };
 }
 
@@ -38,8 +38,8 @@ export interface ResetPasswordResponse {
 
 export interface UserUpdateRequest {
   name: string;
-  jobTitle: string;
-  avatarUrl: string;
+  jobTitle?: string;
+  avatarUrl?: string;
   isActive: boolean;
 }
 
@@ -50,8 +50,8 @@ export interface UserUpdateResponse {
   result?: {
     id: string;
     name: string;
-    jobTitle: string;
-    avatarUrl: string;
+    jobTitle?: string;
+    avatarUrl?: string;
     isActive: boolean;
   };
 }

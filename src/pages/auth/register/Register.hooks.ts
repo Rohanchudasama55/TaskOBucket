@@ -1,16 +1,17 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { authService } from '../../../services/authService';
-import { useAuthContext } from '../../../contexts/AuthContext';
-import { toast } from '../../../utils/toast';
-import { REGISTER_FORM_DEFAULTS, REGISTER_MESSAGES } from './Register.constants';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { authService } from "../../../services/authService";
+import { useAuthContext } from "../../../contexts/AuthContext";
+import { toast } from "../../../utils/toast";
+import {
+  REGISTER_FORM_DEFAULTS,
+  REGISTER_MESSAGES,
+} from "./Register.constants";
 
 export interface RegisterFormData {
   fullName: string;
   companyName: string;
   email: string;
-  jobTitle: string;
-  avatarUrl: string;
 }
 
 export interface UseRegisterFormReturn {
@@ -31,17 +32,17 @@ export function useRegisterForm(): UseRegisterFormReturn {
     fullName: REGISTER_FORM_DEFAULTS.fullName,
     companyName: REGISTER_FORM_DEFAULTS.companyName,
     email: REGISTER_FORM_DEFAULTS.email,
-    jobTitle: '',
-    avatarUrl: '',
   });
-  const [acceptTerms, setAcceptTerms] = useState<boolean>(REGISTER_FORM_DEFAULTS.acceptTerms);
-  const [error, setError] = useState('');
+  const [acceptTerms, setAcceptTerms] = useState<boolean>(
+    REGISTER_FORM_DEFAULTS.acceptTerms,
+  );
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
   };
 
@@ -51,51 +52,50 @@ export function useRegisterForm(): UseRegisterFormReturn {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!acceptTerms) {
       setError(REGISTER_MESSAGES.termsRequired);
       return;
     }
-    
+
     setIsLoading(true);
-    setError('');
-    
+    setError("");
+
     try {
       // Get user ID from auth context (decoded from token during login)
       const userId = user?.id;
-      
+
       if (!userId) {
-        setError('User not authenticated. Please log in first.');
+        setError("User not authenticated. Please log in first.");
         return;
       }
-      
+
       const updateData = {
         name: formData.fullName,
-        jobTitle: formData.jobTitle || '',
-        avatarUrl: formData.avatarUrl || '',
-        isActive: true
+        isActive: true,
       };
 
       const response = await authService.userUpdate(userId, updateData);
-      
+
       if (response.success && response.result) {
         // Store user data in context and localStorage
         const userData = {
           id: response.result.id,
           email: formData.email,
-          name: response.result.name
+          name: response.result.name,
         };
         setUser(userData);
         authService.setUser(userData);
-        
+
         // Show success message
-        toast.success('Profile updated successfully!');
-        
-        // Navigate to projects page
-        navigate('/projects');
+        toast.success("Profile updated successfully!");
+
+        // Navigate to dashboard after completing profile
+        navigate("/dashboard");
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Profile update failed';
+      const errorMessage =
+        error instanceof Error ? error.message : "Profile update failed";
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
@@ -104,7 +104,7 @@ export function useRegisterForm(): UseRegisterFormReturn {
   };
 
   const clearError = () => {
-    setError('');
+    setError("");
   };
 
   return {
@@ -115,6 +115,6 @@ export function useRegisterForm(): UseRegisterFormReturn {
     handleChange,
     handleTermsChange,
     handleSubmit,
-    clearError
+    clearError,
   };
 }
