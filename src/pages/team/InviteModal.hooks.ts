@@ -1,3 +1,4 @@
+// InviteModal.hooks.ts
 import { useState } from "react";
 import { userService } from "../../services/userService";
 import { toast } from "../../utils/toast";
@@ -5,11 +6,12 @@ import { INVITE_MODAL_CONSTANTS } from "./InviteModal.constants";
 import type { InviteModalProps } from "./InviteModal.types";
 
 export interface UseInviteModalReturn {
-  formData: { name: string; email: string };
+  formData: { name: string; email: string; role: string };
   isLoading: boolean;
   error: string | null;
   handleSubmit: (e: React.FormEvent) => Promise<void>;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleRoleChange: (role: string) => void;
   handleClose: () => void;
 }
 
@@ -20,7 +22,9 @@ export function useInviteModal({
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    role: "",
   });
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,29 +34,26 @@ export function useInviteModal({
     setIsLoading(true);
 
     try {
-      // Call the API
-      const response = await userService.invite({
+      const payload = {
         name: formData.name.trim(),
         email: formData.email.trim(),
-      });
+        role: formData.role, // ✅ include role
+      };
 
-      // Show success message
+      const response = await userService.invite(payload);
+
       toast.success(
         response.message || INVITE_MODAL_CONSTANTS.MESSAGES.SUCCESS_DEFAULT,
         "Success"
       );
 
-      // Call optional callback if provided
       if (onSendInvite) {
         await onSendInvite(formData);
       }
 
-      // Reset form and close modal
-      setFormData({ name: "", email: "" });
+      setFormData({ name: "", email: "", role: "" });
       onClose();
     } catch (err) {
-      // Error handling is done by axios interceptor, but we can set local error state
-      // for additional UI feedback if needed
       const errorMessage =
         err instanceof Error
           ? err.message
@@ -65,15 +66,16 @@ export function useInviteModal({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleRoleChange = (role: string) => {
+    setFormData((prev) => ({ ...prev, role }));
   };
 
   const handleClose = () => {
     if (!isLoading) {
-      setFormData({ name: "", email: "" });
+      setFormData({ name: "", email: "", role: "" });
       onClose();
     }
   };
@@ -84,6 +86,7 @@ export function useInviteModal({
     error,
     handleSubmit,
     handleChange,
+    handleRoleChange,
     handleClose,
   };
 }
