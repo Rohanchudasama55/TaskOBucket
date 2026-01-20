@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { api } from "../../../services/axios";
 
 type ValueType = string | number;
 
@@ -38,6 +39,7 @@ function Dropdown({
   onChange,
 }: DropdownProps) {
   const isStatic = options.length > 0 && !apiUrl;
+  console.log("apiUrl", apiUrl);
 
   const [items, setItems] = useState<any[]>(options);
   const [open, setOpen] = useState(false);
@@ -71,31 +73,42 @@ function Dropdown({
     setItems([]);
   }, [debouncedSearch, apiSearch]);
 
+  const fetchData = async (apiUrl: any) => {
+    try {
+      setIsLoading(true);
+      console.log("DDDDDDDDDDDDDDDDDD");
+      const res = await api.get(apiUrl, {
+        // params: {
+        //   pageNumber: page,
+        //   pageSize,
+        //   // ...filterValue,
+        //   ...(debouncedSearch ? { search: debouncedSearch } : {}),
+        // },
+      });
+
+      const data = res.data;
+      let list: any[] = [];
+
+      if (Array.isArray(data)) list = data;
+      else if (Array.isArray(data?.data)) list = data.data;
+      else if (Array.isArray(data?.results)) list = data.results;
+
+      setItems((prev) => (page === 1 ? list : [...prev, ...list]));
+      setHasNext(list.length === pageSize);
+    } catch (error) {
+      setHasNext(false);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   /* ---------- API FETCH ---------- */
   useEffect(() => {
+    
     if (!apiSearch || !apiUrl || !open || isLoading) return;
-
-    setIsLoading(true);
-
-    fetch(
-      `${apiUrl}?page=${page}&page_size=${pageSize}&search=${encodeURIComponent(
-        debouncedSearch
-      )}`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        let list: any[] = [];
-
-        if (Array.isArray(data)) list = data;
-        else if (Array.isArray(data?.data)) list = data.data;
-        else if (Array.isArray(data?.results)) list = data.results;
-
-        setItems((prev) => (page === 1 ? list : [...prev, ...list]));
-        setHasNext(list.length === pageSize);
-      })
-      .catch(() => setHasNext(false))
-      .finally(() => setIsLoading(false));
-  }, [page, debouncedSearch, apiSearch, apiUrl, open, pageSize, isLoading]);
+    console.log("dffdgSSSS");
+    fetchData(apiUrl);
+  }, [page, debouncedSearch, apiSearch, apiUrl, open, pageSize]);
 
   /* ---------- CLOSE ON OUTSIDE ---------- */
   useEffect(() => {
