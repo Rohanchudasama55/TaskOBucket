@@ -4,4 +4,4 @@ export const getModalBackdropStyles = (className?: string): string => {
   return [baseStyles, className].filter(Boolean).join(' ');
 };
 
-export const MODAL_CONTENT_STYLES = 'relative max-w-lg w-full max-h-full overflow-auto';
+ export const MODAL_CONTENT_STYLES = 'relative max-w-lg w-full max-h-full ';

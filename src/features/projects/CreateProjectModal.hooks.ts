@@ -37,20 +37,15 @@ export const availableUsers: User[] = [
 
 export interface UseCreateProjectModalReturn {
   formData: StateFormData;
-  isTeamDropdownOpen: boolean;
-  dropdownRef: React.RefObject<HTMLDivElement | null>;
   handleSubmit: (e: React.FormEvent) => void;
   handleChange: (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => void;
-  toggleTeamMember: (userId: string) => void;
+  updateTeamMembers: (teamMembers: string[]) => void;
+  updateLeadId: (leadId: string) => void;
   handleClose: () => void;
-  toggleTeamDropdown: () => void;
-  getLeadInitials: (leadId: string) => string;
-  getLeadName: (leadId: string) => string;
-  isLeadCurrentUser: (leadId: string) => boolean;
 }
 
 const INITIAL_FORM_DATA: StateFormData = {
@@ -68,8 +63,6 @@ export function useCreateProjectModal({
   isLoading = false,
 }: CreateProjectModalProps): UseCreateProjectModalReturn {
   const [formData, setFormData] = useState<StateFormData>(INITIAL_FORM_DATA);
-  const [isTeamDropdownOpen, setIsTeamDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Add custom scrollbar styles
   useEffect(() => {
@@ -117,21 +110,6 @@ export function useCreateProjectModal({
     }
   }, [formData.name]);
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsTeamDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const { leadId, ...projectData } = formData;
@@ -153,12 +131,17 @@ export function useCreateProjectModal({
     }));
   };
 
-  const toggleTeamMember = (userId: string) => {
+  const updateTeamMembers = (teamMembers: string[]) => {
     setFormData((prev) => ({
       ...prev,
-      teamMembers: prev.teamMembers.includes(userId)
-        ? prev.teamMembers.filter((id) => id !== userId)
-        : [...prev.teamMembers, userId],
+      teamMembers,
+    }));
+  };
+
+  const updateLeadId = (leadId: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      leadId,
     }));
   };
 
@@ -169,35 +152,13 @@ export function useCreateProjectModal({
     }
   };
 
-  const toggleTeamDropdown = () => {
-    setIsTeamDropdownOpen(!isTeamDropdownOpen);
-  };
-
-  const getLeadInitials = (leadId: string): string => {
-    const user = availableUsers.find((u) => u.id === leadId);
-    return user?.initials || "TC";
-  };
-
-  const getLeadName = (leadId: string): string => {
-    const user = availableUsers.find((u) => u.id === leadId);
-    return user?.name || "Tom Cook";
-  };
-
-  const isLeadCurrentUser = (leadId: string): boolean => {
-    return leadId === "current-user";
-  };
-
   return {
     formData,
-    isTeamDropdownOpen,
-    dropdownRef,
     handleSubmit,
     handleChange,
-    toggleTeamMember,
+    updateTeamMembers,
+    updateLeadId,
     handleClose,
-    toggleTeamDropdown,
-    getLeadInitials,
-    getLeadName,
-    isLeadCurrentUser,
   };
 }
+ 

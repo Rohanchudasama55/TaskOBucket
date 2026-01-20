@@ -1,8 +1,13 @@
 import { X, Plus } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import type { Sprint, SprintStatus } from "../types";
 import { Button } from "../../../components/ui/Button";
 import { Input } from "../../../components/ui/Input";
+import { useCreateUpdate, useFetchAllID } from "../../../hooks/CrudHooks";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useAlert } from "../../../contexts/AlertContext";
+import Dropdown from "../../../components/common/DropDown/DropDown";
 
 interface CreateSprintModalProps {
   isOpen: boolean;
@@ -13,9 +18,15 @@ interface CreateSprintModalProps {
 
 /** Mock projects – later replace with API */
 const projects = [
-  { id: "p1", name: "Project Alpha" },
+  { id: "695e53107964464786292e2c", name: "Project Alpha" },
   { id: "p2", name: "Project Beta" },
   { id: "p3", name: "Project Gamma" },
+];
+
+const statusOptions = [
+  { id: "BACKLOG", name: "BACKLOG" },
+  { id: "ongoing", name: "Ongoing" },
+  { id: "completed", name: "Completed" },
 ];
 
 type CreateSprintFormValues = {
@@ -33,10 +44,14 @@ export function CreateSprintModal({
   onCreateSprint,
   defaultStatus = "upcoming",
 }: CreateSprintModalProps) {
+  const { id } = useParams();
+  const apiname = "sprint/create";
+  const showAlert = useAlert();
   const {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
   } = useForm<CreateSprintFormValues>({
     defaultValues: {
@@ -48,26 +63,37 @@ export function CreateSprintModal({
       status: defaultStatus,
     },
   });
+  const { data, isPending: isFetching } = useFetchAllID<any>(apiname, id);
+  const { mutateAsync, error, isSuccess, isError } = useCreateUpdate<any>(
+    apiname,
+    id
+  );
 
-  const onSubmit = (data: CreateSprintFormValues) => {
-    const project = projects.find((p) => p.id === data.projectId);
-
-    onCreateSprint({
-      name: data.name.trim(),
-      projectId: data.projectId,
-      projectName: project?.name ?? "",
-      startDate: data.startDate,
-      endDate: data.endDate,
-      description: data.description || undefined,
-      status: data.status,
-    });
-
-    reset();
-    onClose();
+  const onSubmit = async (formData: CreateSprintFormValues) => {
+    if (id) {
+      (formData as any).Id = id;
+    }
+    mutateAsync(formData);
   };
 
+  useEffect(() => {
+    if (isSuccess) {
+      showAlert(
+        id ? "Updated Successfully" : "Created Successfully",
+        "success"
+      );
+      onClose();
+    }
+    if (isError) {
+      showAlert(
+        typeof error === "object" && error !== null && "response" in error
+          ? (error as any)?.response?.data?.Message
+          : "Something went wrong",
+        "error"
+      );
+    }
+  }, [isSuccess, isError]);
   if (!isOpen) return null;
-
   return (
     <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full">
@@ -103,7 +129,7 @@ export function CreateSprintModal({
           </div>
 
           {/* Project */}
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium mb-1">Project *</label>
             <select
               {...register("projectId", {
@@ -118,6 +144,32 @@ export function CreateSprintModal({
                 </option>
               ))}
             </select>
+            {errors.projectId && (
+              <p className="text-xs text-red-500 mt-1">
+                {errors.projectId.message}
+              </p>
+            )}
+          </div> */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Project *</label>
+
+            <Controller
+              name="projectId"
+              control={control}
+              rules={{ required: "Project is required" }}
+              render={({ field }) => (
+                <Dropdown
+                  options={projects}
+                  labelKey="name"
+                  valueKey="id"
+                  placeholder="Select project"
+                  multiple={false}
+                  selectedValues={field.value ? [field.value] : []}
+                  onChange={(vals) => field.onChange(vals[0] ?? "")}
+                />
+              )}
+            />
+
             {errors.projectId && (
               <p className="text-xs text-red-500 mt-1">
                 {errors.projectId.message}
@@ -170,14 +222,23 @@ export function CreateSprintModal({
           {/* Status */}
           <div>
             <label className="block text-sm font-medium mb-1">Status</label>
-            <select
-              {...register("status")}
-              className="w-full px-3 py-2 rounded-lg ring-1 ring-slate-300"
-            >
-              <option value="upcoming">Upcoming</option>
-              <option value="ongoing">Ongoing</option>
-              <option value="completed">Completed</option>
-            </select>
+
+            <Controller
+              name="status"
+              control={control}
+              rules={{ required: "Status is required" }}
+              render={({ field }) => (
+                <Dropdown
+                  options={statusOptions}
+                  labelKey="name"
+                  valueKey="id"
+                  placeholder="Select status"
+                  multiple={false}
+                  selectedValues={field.value ? [field.value] : []}
+                  onChange={(vals) => field.onChange(vals[0] ?? "")}
+                />
+              )}
+            />
           </div>
 
           {/* Actions */}

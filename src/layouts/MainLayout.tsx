@@ -5,6 +5,7 @@ import { Avatar } from "../components/ui/Avatar";
 import { navItems } from "../utils/navItems";
 import { Button } from "../components/ui/Button";
 import { ChevronDown, ChevronRight } from "lucide-react";
+import { LogoutButton } from "../components/auth";
 
 interface MainLayoutProps {
   children?: ReactNode;
@@ -105,6 +106,7 @@ export function MainLayout({ children }: MainLayoutProps) {
             );
           })}
         </nav>
+        <div className="flex justify-center w-full px-3 py-2  items-center" ><LogoutButton /></div>
       </aside>
       {isSidebarOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
@@ -113,11 +115,12 @@ export function MainLayout({ children }: MainLayoutProps) {
             onClick={() => setIsSidebarOpen(false)}
           />
 
-          <aside className="absolute left-0 top-0 h-full w-64 bg-white shadow-lg">
+          <aside className="absolute left-0 top-0 h-full w-64 bg-white flex flex-col shadow-lg">
             <div className="min-h-16 flex items-center justify-between px-4 border-b">
               <span className="text-lg font-semibold">Menu</span>
               <button onClick={() => setIsSidebarOpen(false)}>✕</button>
             </div>
+            {/* <div className="flex justify-between flex-col h-auto"> */}
             <nav className="flex-1 p-4 space-y-1">
               {navItems.map((item) => {
                 const isParentActive = isPathActive(
@@ -190,6 +193,8 @@ export function MainLayout({ children }: MainLayoutProps) {
                 );
               })}
             </nav>
+            <div className="flex justify-center w-full px-3 py-2  items-center" ><LogoutButton /></div>
+            {/* </div> */}
           </aside>
         </div>
       )}
