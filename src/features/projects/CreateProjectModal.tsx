@@ -112,7 +112,7 @@ export function CreateProjectModal({
                 {CREATE_PROJECT_MODAL_CONSTANTS.MESSAGES.KEY_USAGE.replace(
                   "{key}",
                   formData.key ||
-                    CREATE_PROJECT_MODAL_CONSTANTS.PLACEHOLDERS.PROJECT_KEY
+                    CREATE_PROJECT_MODAL_CONSTANTS.PLACEHOLDERS.PROJECT_KEY,
                 )}
               </p>
             </div>
@@ -204,7 +204,7 @@ export function CreateProjectModal({
                     ) : (
                       formData.teamMembers.map((userId) => {
                         const user = availableUsers.find(
-                          (u) => u.id === userId
+                          (u) => u.id === userId,
                         );
                         return (
                           <div
@@ -321,10 +321,10 @@ export function CreateProjectModal({
               <p className="mt-1 text-xs text-gray-500">
                 {CREATE_PROJECT_MODAL_CONSTANTS.MESSAGES.MEMBERS_SELECTED.replace(
                   "{count}",
-                  formData.teamMembers.length.toString()
+                  formData.teamMembers.length.toString(),
                 ).replace(
                   "{plural}",
-                  formData.teamMembers.length !== 1 ? "s" : ""
+                  formData.teamMembers.length !== 1 ? "s" : "",
                 )}
               </p>
             </div>

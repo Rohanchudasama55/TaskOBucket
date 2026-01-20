@@ -2,7 +2,7 @@ import type { Member, Tab } from "./Teams.hooks";
 
 export const mockMembers: Member[] = [
   {
-    id: 1,
+    id: "1",
     name: "Alice Freeman",
     email: "alice@projectflow.com",
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alice",
@@ -11,7 +11,7 @@ export const mockMembers: Member[] = [
     activity: "Active now",
   },
   {
-    id: 2,
+    id: "2",
     name: "Bob Smith",
     email: "bob@projectflow.com",
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Bob",
@@ -20,7 +20,7 @@ export const mockMembers: Member[] = [
     activity: "Last seen 5m ago",
   },
   {
-    id: 3,
+    id: "3",
     name: "Charlie Davis",
     email: "charlie@projectflow.com",
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Charlie",
@@ -29,7 +29,7 @@ export const mockMembers: Member[] = [
     activity: "Away • 30m",
   },
   {
-    id: 4,
+    id: "4",
     name: "Dana Lee",
     email: "dana@projectflow.com",
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Dana",
@@ -38,7 +38,7 @@ export const mockMembers: Member[] = [
     activity: "Active now",
   },
   {
-    id: 5,
+    id: "5",
     name: "Evan Wright",
     email: "evan@projectflow.com",
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Evan",
