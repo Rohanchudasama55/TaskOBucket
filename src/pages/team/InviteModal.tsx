@@ -1,9 +1,11 @@
 import { Modal } from "../../components/ui/Modal";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
-import { INVITE_MODAL_CONSTANTS } from "./InviteModal.constants";
+import { INVITE_MODAL_CONSTANTS, UsersRole } from "./InviteModal.constants";
 import { useInviteModal } from "./InviteModal.hooks";
 import type { InviteModalProps } from "./InviteModal.types";
+import { Controller } from "react-hook-form";
+import Dropdown from "../../components/common/DropDown/DropDown";
 
 export function InviteModal({
   isOpen,
@@ -14,11 +16,16 @@ export function InviteModal({
     formData,
     isLoading,
     error,
+    handleRoleChange,
     handleSubmit,
     handleChange,
     handleClose,
   } = useInviteModal({ onClose, onSendInvite });
-
+  const roleOptions = UsersRole.map((role) => ({
+    id: role.id,
+    label: role.name,
+    value: role.id,
+  }));
   return (
     <Modal open={isOpen} onClose={handleClose}>
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-auto">
@@ -81,7 +88,21 @@ export function InviteModal({
                 placeholder={INVITE_MODAL_CONSTANTS.PLACEHOLDERS.NAME}
               />
             </div>
-
+            {/* Rol Field */}
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                {INVITE_MODAL_CONSTANTS.LABELS.ROLE}
+              </label>
+              <Dropdown
+                options={roleOptions}
+                labelKey="label"
+                valueKey="value"
+                multiple={false}
+                selectedValues={formData.role ? [formData.role] : []}
+                onChange={(values) => handleRoleChange(values[0] ?? "")}
+                placeholder="Select Role"
+              />
+            </div>
             {/* Email Field */}
             <div>
               <Input

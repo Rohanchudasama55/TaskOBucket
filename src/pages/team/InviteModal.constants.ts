@@ -1,3 +1,5 @@
+import type { Role } from "./InviteModal.types";
+
 export const INVITE_MODAL_CONSTANTS = {
   TITLE: "Invite Team Member",
   DESCRIPTION: "Send an invitation to join your team",
@@ -17,5 +19,10 @@ export const INVITE_MODAL_CONSTANTS = {
   LABELS: {
     NAME: "Name",
     EMAIL: "Email",
+    ROLE: "Role",
   },
 } as const;
+export const UsersRole: Role[] = [
+  { id: "PM", name: "Project Manager"},
+  { id: "DEV", name: "Developer"},
+];

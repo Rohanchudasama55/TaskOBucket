@@ -6,3 +6,7 @@ export interface InviteModalProps {
     email: string;
   }) => void | Promise<void>;
 }
+export interface Role {
+  id: string;
+  name: string;
+}
