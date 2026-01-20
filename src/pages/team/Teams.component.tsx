@@ -30,8 +30,8 @@ export function RoleSelect({
   memberId,
 }: {
   value: MemberRole;
-  memberId: number;
-  onChange: (memberId: number, newRole: MemberRole) => void;
+  memberId: string;
+  onChange: (memberId: string, newRole: MemberRole) => void;
 }) {
   const roles: MemberRole[] = ["Admin", "Editor", "Viewer"];
 
@@ -87,8 +87,8 @@ export function MemberRow({
 }: {
   member: Member;
   isAdmin: boolean;
-  onRoleChange: (memberId: number, newRole: MemberRole) => void;
-  onDelete: (memberId: number) => void;
+  onRoleChange: (memberId: string, newRole: MemberRole) => void;
+  onDelete: (memberId: string) => void;
 }) {
   return (
     <tr className="border-b border-slate-100 hover:bg-slate-50 transition-colors">

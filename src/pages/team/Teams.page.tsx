@@ -1,10 +1,10 @@
-import { Plus, Search } from "lucide-react";
-import { tabs } from "./Teams.constants";
+import { Loader2, Plus, Search } from "lucide-react";
 import type { TeamsPageProps } from "./Teams.hooks";
 import { Button } from "../../components/ui/Button";
 import { InviteModal } from "./InviteModal";
 import { useTeamsPage } from "./Teams.hooks";
 import { MemberRow } from "./Teams.component";
+import { ConfirmationModal } from "../../components/common/ConfirmationModal";
 
 const TeamsPage = (props: TeamsPageProps) => {
   const {
@@ -12,15 +12,35 @@ const TeamsPage = (props: TeamsPageProps) => {
     activeTab,
     searchQuery,
     isInviteModalOpen,
+    isDeleteModalOpen,
+    deleteMemberId,
     isAdmin,
     setActiveTab,
     setSearchQuery,
+    setPage,
+    tabs,
+    isLoading,
+    error,
+    page,
+    pageSize,
+    totalPages,
+    totalCount,
     handleRoleChange,
-    handleDelete,
+    handleDeleteClick,
+    handleDeleteConfirm,
+    handleDeleteCancel,
     handleInviteSuccess,
     openInviteModal,
     closeInviteModal,
   } = useTeamsPage(props);
+
+  const deleteMember = members.find((m) => m.id === deleteMemberId);
+
+  const showingFrom = members.length ? (page - 1) * pageSize + 1 : 0;
+  const showingTo = members.length ? (page - 1) * pageSize + members.length : 0;
+  const effectiveTotal = totalCount || Math.max(showingTo, members.length);
+  const canGoPrev = page > 1;
+  const canGoNext = page < totalPages;
 
   return (
     <div className="min-h-screen bg-slate-50 p-8">
@@ -48,7 +68,6 @@ const TeamsPage = (props: TeamsPageProps) => {
 
         <div className="mb-6 flex gap-4">
           <div className="relative w-96">
-            {" "}
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
               type="text"
@@ -59,6 +78,12 @@ const TeamsPage = (props: TeamsPageProps) => {
             />
           </div>
         </div>
+
+        {error && (
+          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {error}
+          </div>
+        )}
 
         {/* Tabs */}
         <div className="flex gap-1 mb-6 border-b border-slate-200">
@@ -103,39 +128,65 @@ const TeamsPage = (props: TeamsPageProps) => {
               </tr>
             </thead>
             <tbody>
-              {members.map((member) => (
-                <MemberRow
-                  key={member.id}
-                  member={member}
-                  isAdmin={isAdmin}
-                  onRoleChange={handleRoleChange}
-                  onDelete={handleDelete}
-                />
-              ))}
+              {isLoading ? (
+                <tr>
+                  <td
+                    colSpan={5}
+                    className="py-10 px-6 text-center text-slate-500"
+                  >
+                    <div className="flex items-center justify-center gap-2">
+                      <Loader2 className="h-5 w-5 animate-spin text-blue-500" />
+                      Loading members...
+                    </div>
+                  </td>
+                </tr>
+              ) : members.length ? (
+                members.map((member) => (
+                  <MemberRow
+                    key={member.id}
+                    member={member}
+                    isAdmin={isAdmin}
+                    onRoleChange={handleRoleChange}
+                    onDelete={handleDeleteClick}
+                  />
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={5}
+                    className="py-10 px-6 text-center text-slate-500"
+                  >
+                    No members found.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
           {/* Pagination */}
           <div className="flex items-center justify-between px-6 py-4 border-t border-slate-200 bg-white">
             <div className="text-sm text-slate-600">
-              Showing 1 to 5 of 24 members
+              {effectiveTotal > 0
+                ? `Showing ${showingFrom} to ${showingTo} of ${effectiveTotal} members`
+                : isLoading
+                  ? "Loading members..."
+                  : "No members to display"}
             </div>
             <div className="flex items-center gap-1">
-              <button className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 transition-colors">
+              <button
+                onClick={() => setPage(page - 1)}
+                disabled={!canGoPrev}
+                className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+              >
                 ‹
               </button>
-              <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-500 text-white font-medium">
-                1
-              </button>
-              <button className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100 transition-colors">
-                2
-              </button>
-              <button className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100 transition-colors">
-                3
-              </button>
-              <span className="w-8 h-8 flex items-center justify-center text-slate-400">
-                ...
+              <span className="px-3 py-1 rounded-lg bg-slate-100 text-sm font-medium text-slate-700">
+                {page} / {totalPages}
               </span>
-              <button className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 transition-colors">
+              <button
+                onClick={() => setPage(page + 1)}
+                disabled={!canGoNext}
+                className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+              >
                 ›
               </button>
             </div>
@@ -147,6 +198,22 @@ const TeamsPage = (props: TeamsPageProps) => {
         isOpen={isInviteModalOpen}
         onClose={closeInviteModal}
         onSendInvite={handleInviteSuccess}
+      />
+
+      <ConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+        title="Delete Team Member"
+        message={
+          deleteMember
+            ? `Are you sure you want to delete ${deleteMember.name}? This action cannot be undone.`
+            : "Are you sure you want to delete this team member? This action cannot be undone."
+        }
+        confirmText="Delete"
+        cancelText="Cancel"
+        confirmButtonVariant="danger"
+        isLoading={isLoading}
       />
     </div>
   );
