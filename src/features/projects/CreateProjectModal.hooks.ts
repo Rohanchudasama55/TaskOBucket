@@ -11,7 +11,7 @@ interface StateFormData {
   name: string;
   description: string;
   ownerId: string;
-  key: string;
+  project_key: string;
   leadId: string;
   teamMembers: string[];
 }
@@ -23,7 +23,7 @@ export interface CreateProjectModalProps {
     name: string;
     description: string;
     ownerId: string;
-    key: string;
+    project_key: string;
     teamMembers: string[];
   }) => void;
   isLoading?: boolean;
@@ -41,7 +41,7 @@ export interface UseCreateProjectModalReturn {
   handleChange: (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => void;
   updateTeamMembers: (teamMembers: string[]) => void;
   updateLeadId: (leadId: string) => void;
@@ -52,7 +52,7 @@ const INITIAL_FORM_DATA: StateFormData = {
   name: "",
   description: "",
   ownerId: "",
-  key: "",
+  project_key: "",
   leadId: "current-user",
   teamMembers: ["current-user"],
 };
@@ -105,7 +105,7 @@ export function useCreateProjectModal({
 
       setFormData((prev) => ({
         ...prev,
-        key: generatedKey || "PROJ",
+        project_key: generatedKey || "PROJ",
       }));
     }
   }, [formData.name]);
@@ -122,7 +122,7 @@ export function useCreateProjectModal({
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -161,4 +161,3 @@ export function useCreateProjectModal({
     handleClose,
   };
 }
- 

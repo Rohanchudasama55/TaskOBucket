@@ -42,6 +42,7 @@ function Dropdown({
   console.log("apiUrl", apiUrl);
 
   const [items, setItems] = useState<any[]>(options);
+  console.log("itemsitemsitemsitemsitemsitemsitemsitemsitems []", items);
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -76,7 +77,6 @@ function Dropdown({
   const fetchData = async (apiUrl: any) => {
     try {
       setIsLoading(true);
-      console.log("DDDDDDDDDDDDDDDDDD");
       const res = await api.get(apiUrl, {
         // params: {
         //   pageNumber: page,
@@ -87,11 +87,13 @@ function Dropdown({
       });
 
       const data = res.data;
+      console.log("DDDDDDDDDDDDDDDDDD", data.result);
       let list: any[] = [];
 
       if (Array.isArray(data)) list = data;
       else if (Array.isArray(data?.data)) list = data.data;
       else if (Array.isArray(data?.results)) list = data.results;
+      else if (Array.isArray(data.result.data)) list = data.result.data;
 
       setItems((prev) => (page === 1 ? list : [...prev, ...list]));
       setHasNext(list.length === pageSize);
@@ -104,11 +106,10 @@ function Dropdown({
 
   /* ---------- API FETCH ---------- */
   useEffect(() => {
-    
-    if (!apiSearch || !apiUrl || !open || isLoading) return;
+    if (!apiUrl || isLoading) return;
     console.log("dffdgSSSS");
     fetchData(apiUrl);
-  }, [page, debouncedSearch, apiSearch, apiUrl, open, pageSize]);
+  }, [page, debouncedSearch, apiUrl, open, pageSize]);
 
   /* ---------- CLOSE ON OUTSIDE ---------- */
   useEffect(() => {
@@ -154,7 +155,7 @@ function Dropdown({
         return keys.some((key) =>
           String(item[key] ?? "")
             .toLowerCase()
-            .includes(search.toLowerCase())
+            .includes(search.toLowerCase()),
         );
       });
 
@@ -200,7 +201,7 @@ function Dropdown({
         {!multiple && selectedValues.length === 1 && search === "" && (
           <span className="text-sm text-slate-700">
             {String(
-              items.find((i) => i[valueKey] === selectedValues[0])?.[labelKey]
+              items.find((i) => i[valueKey] === selectedValues[0])?.[labelKey],
             )}
           </span>
         )}
@@ -245,7 +246,7 @@ function Dropdown({
         >
           {displayItems
             .filter(
-              (item) => !selectedValues.includes(item[valueKey] as ValueType)
+              (item) => !selectedValues.includes(item[valueKey] as ValueType),
             )
             .map((item) => (
               <div

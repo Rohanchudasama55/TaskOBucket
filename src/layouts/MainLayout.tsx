@@ -40,7 +40,7 @@ export function MainLayout({ children }: MainLayoutProps) {
           {navItems.map((item) => {
             const isParentActive = isPathActive(
               item.matchPaths,
-              location.pathname
+              location.pathname,
             );
 
             const ParentIcon = item.icon;
@@ -76,7 +76,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                     {item.children.map((child) => {
                       const isChildActive = isPathActive(
                         child.matchPaths,
-                        location.pathname
+                        location.pathname,
                       );
 
                       const ChildIcon = child.icon;
@@ -106,7 +106,9 @@ export function MainLayout({ children }: MainLayoutProps) {
             );
           })}
         </nav>
-        <div className="flex justify-center w-full px-3 py-2  items-center" ><LogoutButton /></div>
+        <div className="flex justify-center w-full px-3 py-2  items-center">
+          <LogoutButton />
+        </div>
       </aside>
       {isSidebarOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
@@ -125,7 +127,7 @@ export function MainLayout({ children }: MainLayoutProps) {
               {navItems.map((item) => {
                 const isParentActive = isPathActive(
                   item.matchPaths,
-                  location.pathname
+                  location.pathname,
                 );
 
                 const ParentIcon = item.icon;
@@ -163,7 +165,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                         {item.children.map((child) => {
                           const isChildActive = isPathActive(
                             child.matchPaths,
-                            location.pathname
+                            location.pathname,
                           );
 
                           const ChildIcon = child.icon;
@@ -193,7 +195,9 @@ export function MainLayout({ children }: MainLayoutProps) {
                 );
               })}
             </nav>
-            <div className="flex justify-center w-full px-3 py-2  items-center" ><LogoutButton /></div>
+            <div className="flex justify-center w-full px-3 py-2  items-center">
+              <LogoutButton />
+            </div>
             {/* </div> */}
           </aside>
         </div>

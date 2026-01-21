@@ -44,7 +44,7 @@ export function useInviteModal({
 
       toast.success(
         response.message || INVITE_MODAL_CONSTANTS.MESSAGES.SUCCESS_DEFAULT,
-        "Success"
+        "Success",
       );
 
       if (onSendInvite) {
