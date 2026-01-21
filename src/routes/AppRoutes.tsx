@@ -23,13 +23,18 @@ export function AppRoutes() {
       <Routes>
         <Route path="/auth/login" element={<LoginPage />} />
 
-        <Route path="/auth/register" element={<RegisterPage />} />
+        <Route path="/auth/user" element={<RegisterPage />} />
 
         <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
 
         <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
 
         <Route path="/accept-invite" element={<AcceptInvitePage />} />
+
+        <Route
+          path="/auth/create-organization"
+          element={<CreateOrganizationPage />}
+        />
         {/* <Route path="/login" element={<LoginPage />} />
 
         <Route path="/signup" element={<RegisterPage />} /> */}
@@ -43,7 +48,7 @@ export function AppRoutes() {
             <Route path="/board" element={<BoardPage />} />
 
             <Route path="/projects" element={<BoardPage />} />
-            
+
             <Route path="/sprints" element={<SprintsPage />} />
 
             <Route path="/issues" element={<IssuesPage />} />
@@ -52,10 +57,6 @@ export function AppRoutes() {
 
             <Route path="/teams" element={<TeamsPage />} />
           </Route>
-          <Route
-            path="/auth/create-organization"
-            element={<CreateOrganizationPage />}
-          />
         </Route>
 
         {/* 404 */}

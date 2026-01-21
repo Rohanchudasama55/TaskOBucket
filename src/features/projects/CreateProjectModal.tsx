@@ -3,15 +3,13 @@ import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
 import Dropdown from "../../components/common/DropDown/DropDown";
 import { useForm, Controller } from "react-hook-form";
-import {
-  availableUsers,
-  type CreateProjectModalProps,
-} from "./CreateProjectModal.hooks";
+import { type CreateProjectModalProps } from "./CreateProjectModal.hooks";
 import { CREATE_PROJECT_MODAL_CONSTANTS } from "./CreateProjectModal.constants";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAlert } from "../../contexts/AlertContext";
 import { useCreateUpdate } from "../../hooks/CrudHooks";
+import { userService, type ApiUser } from "../../services/userService";
 
 interface CreateProjectFormValues {
   name: string;
@@ -19,52 +17,97 @@ interface CreateProjectFormValues {
   leadId: string;
   description: string;
   startDate: string;
-  // teamMembers: string[];
+  teamMembers: string[];
 }
 
 export function CreateProjectModal({
   isOpen,
   onClose,
-  onSave,
   isLoading,
 }: CreateProjectModalProps) {
+  const [teamOptions, setTeamOptions] = useState<
+    Array<{ id: string; name: string }>
+  >([]);
   const { id } = useParams();
   const apiname = "project/create";
   const showAlert = useAlert();
-  const {
-    control,
-    register,
-    handleSubmit,
-    reset,
-    watch,
-    formState: { errors },
-  } = useForm<CreateProjectFormValues>({
-    defaultValues: {
-      name: "",
-      project_key: "",
-      leadId: "",
-      description: "",
-      startDate: "",
-      // teamMembers: [],
-    },
-  });
+  const { control, register, handleSubmit, reset, watch } =
+    useForm<CreateProjectFormValues>({
+      defaultValues: {
+        name: "",
+        project_key: "",
+        leadId: "",
+        description: "",
+        // startDate: "",
+        teamMembers: [],
+      },
+    });
   const { mutateAsync, error, isSuccess, isError } = useCreateUpdate<any>(
     apiname,
-    id
+    id,
   );
+
+  const extractUsersFromResponse = useCallback((payload: any): ApiUser[] => {
+    const data = payload ?? {};
+    const result = data?.result ?? {};
+
+    const candidates = [
+      Array.isArray(data?.users) ? data.users : null,
+      Array.isArray(data?.data) ? data.data : null,
+      Array.isArray(result?.users) ? result.users : null,
+      Array.isArray(result?.data) ? result.data : null,
+      Array.isArray(data?.data?.data) ? data.data.data : null,
+    ];
+
+    return (candidates.find((candidate) => Array.isArray(candidate)) ||
+      []) as ApiUser[];
+  }, []);
+
+  const mapUsersToOptions = useCallback(
+    (users: ApiUser[]) =>
+      users.map((user, index) => {
+        const idCandidate =
+          user.id ??
+          user._id ??
+          user.email ??
+          user.name ??
+          `user-${Date.now()}-${index}`;
+
+        return {
+          id: String(idCandidate),
+          name: user.name || user.email || "Unknown User",
+        };
+      }),
+    [],
+  );
+
+  const loadTeamOptions = useCallback(async () => {
+    try {
+      const response = await userService.list({ page: 1, limit: 50 });
+      const users = extractUsersFromResponse(response);
+      setTeamOptions(mapUsersToOptions(users));
+    } catch {
+      setTeamOptions([]);
+    }
+  }, [extractUsersFromResponse, mapUsersToOptions]);
+
+  useEffect(() => {
+    loadTeamOptions();
+  }, [loadTeamOptions]);
 
   const onSubmit = async (formData: CreateProjectFormValues) => {
     const payload = {
       name: formData.name,
+      // Backend contract appears to expect `key` (not `project_key`) and rejects unknown fields.
       project_key: formData.project_key,
       description: formData.description.trim(),
-      
-      // startDate: formData.startDate,
-      // leadId: formData.leadId,
-      // teamMembers: formData.teamMembers.map((userId) => ({
-      //   userId,
-      //   role: "DEV",
-      // })),
+
+      startDate: formData.startDate,
+      leadId: formData.leadId,
+      teamMembers: formData.teamMembers.map((userId) => ({
+        userId,
+        role: "DEV",
+      })),
     };
 
     await mutateAsync(payload);
@@ -74,7 +117,7 @@ export function CreateProjectModal({
     if (isSuccess) {
       showAlert(
         id ? "Updated Successfully" : "Created Successfully",
-        "success"
+        "success",
       );
       onClose();
     }
@@ -83,17 +126,11 @@ export function CreateProjectModal({
         typeof error === "object" && error !== null && "response" in error
           ? (error as any)?.response?.data?.Message
           : "Something went wrong",
-        "error"
+        "error",
       );
     }
   }, [isSuccess, isError]);
   const formValues = watch();
-
-  const teamOptions = availableUsers.map((user) => ({
-    id: user.id,
-    label: user.name,
-    value: user.id,
-  }));
 
   // const onSubmit = (data: CreateProjectFormValues) => {
   //   onSave(data);
@@ -130,7 +167,10 @@ export function CreateProjectModal({
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="px-6 py-4 overflow-auto">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="px-6 py-4 overflow-auto"
+        >
           <div className="space-y-5">
             {/* Project Name */}
             <Input
@@ -159,7 +199,7 @@ export function CreateProjectModal({
                 {CREATE_PROJECT_MODAL_CONSTANTS.MESSAGES.KEY_USAGE.replace(
                   "{project_key}",
                   formValues.project_key ||
-                    CREATE_PROJECT_MODAL_CONSTANTS.PLACEHOLDERS.PROJECT_KEY
+                    CREATE_PROJECT_MODAL_CONSTANTS.PLACEHOLDERS.PROJECT_KEY,
                 )}
               </p>
             </div>
@@ -171,7 +211,7 @@ export function CreateProjectModal({
                 required: "Description is required",
               })}
             />
-{/* 
+            {/* 
             <Input
               label="Start Date"
               type="date"
@@ -190,12 +230,12 @@ export function CreateProjectModal({
                 render={({ field }) => (
                   <Dropdown
                     options={teamOptions}
-                    labelKey="label"
+                    labelKey="name"
                     // apiUrl="project/project-assignable"
-                    valueKey="value"
+                    valueKey="id"
                     multiple={false}
                     selectedValues={field.value ? [field.value] : []}
-                    onChange={(values) => field.onChange(values[0])}
+                    onChange={(values) => field.onChange(values[0] || "")}
                     placeholder="Select project lead"
                   />
                 )}
@@ -203,7 +243,7 @@ export function CreateProjectModal({
             </div>
 
             {/* Team Members */}
-            {/* <div>
+            <div>
               <label className="block text-sm font-medium mb-2">
                 {CREATE_PROJECT_MODAL_CONSTANTS.LABELS.TEAM_MEMBERS}
               </label>
@@ -213,12 +253,11 @@ export function CreateProjectModal({
                 render={({ field }) => (
                   <Dropdown
                     options={teamOptions}
-                    // apiUrl="project/project-assignable"
-                    labelKey="label"
-                    valueKey="value"
+                    labelKey="name"
+                    valueKey="id"
                     multiple
-                    selectedValues={field.value}
-                    onChange={(values) => field.onChange(values.map((v: any) => v.value))}
+                    selectedValues={field.value ? field.value : []}
+                    onChange={(values) => field.onChange(values)}
                     placeholder={
                       CREATE_PROJECT_MODAL_CONSTANTS.PLACEHOLDERS
                         .SELECT_TEAM_MEMBERS
@@ -229,13 +268,13 @@ export function CreateProjectModal({
               <p className="mt-1 text-xs text-gray-500">
                 {CREATE_PROJECT_MODAL_CONSTANTS.MESSAGES.MEMBERS_SELECTED.replace(
                   "{count}",
-                  formValues.teamMembers.length.toString()
+                  formValues.teamMembers.length.toString(),
                 ).replace(
                   "{plural}",
-                  formValues.teamMembers.length !== 1 ? "s" : ""
+                  formValues.teamMembers.length !== 1 ? "s" : "",
                 )}
               </p>
-            </div> */}
+            </div>
           </div>
 
           {/* Footer */}

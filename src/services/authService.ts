@@ -24,12 +24,22 @@ const authApi = axios.create({
 export const authService = {
   userUpdate: async (
     userId: string,
-    userData: UserUpdateRequest
+    userData: UserUpdateRequest,
   ): Promise<UserUpdateResponse> => {
     try {
+      const token = localStorage.getItem("auth_token");
+      if (!token) {
+        throw new Error("Authentication required. Please log in again.");
+      }
+
       const response = await authApi.put<UserUpdateResponse>(
         `/user/user-update/${userId}`,
-        userData
+        userData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
       );
       return response.data;
     } catch (error) {
@@ -46,7 +56,7 @@ export const authService = {
     try {
       const response = await authApi.post<LoginResponse>(
         "/auth/login",
-        credentials
+        credentials,
       );
       return response.data;
     } catch (error) {
@@ -59,12 +69,12 @@ export const authService = {
   },
 
   forgotPassword: async (
-    data: ForgotPasswordRequest
+    data: ForgotPasswordRequest,
   ): Promise<ForgotPasswordResponse> => {
     try {
       const response = await authApi.post<ForgotPasswordResponse>(
         "/auth/forgot-password",
-        data
+        data,
       );
       return response.data;
     } catch (error) {
@@ -78,12 +88,12 @@ export const authService = {
   },
 
   resetPassword: async (
-    data: ResetPasswordRequest
+    data: ResetPasswordRequest,
   ): Promise<ResetPasswordResponse> => {
     try {
       const response = await authApi.put<ResetPasswordResponse>(
         "/auth/reset-password",
-        data
+        data,
       );
       return response.data;
     } catch (error) {
@@ -95,20 +105,26 @@ export const authService = {
       throw new Error("An unexpected error occurred");
     }
   },
-  acceptInvite: async (data: ResetPasswordRequest): Promise<ResetPasswordResponse> => {
-    console.log(data, "bbb")
+  acceptInvite: async (
+    data: ResetPasswordRequest,
+  ): Promise<ResetPasswordResponse> => {
+    console.log(data, "bbb");
     try {
-      const response = await authApi.put<ResetPasswordResponse>(`/user/accept-invite?token=${data.token}`, data);
+      const response = await authApi.put<ResetPasswordResponse>(
+        `/user/accept-invite?token=${data.token}`,
+        data,
+      );
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data?.message || 'Failed to accept invite';
+        const errorMessage =
+          error.response?.data?.message || "Failed to accept invite";
         throw new Error(errorMessage);
       }
-      throw new Error('An unexpected error occurred');
+      throw new Error("An unexpected error occurred");
     }
   },
-  
+
   // Store token in localStorage
   setToken: (token: string) => {
     localStorage.setItem("auth_token", token);

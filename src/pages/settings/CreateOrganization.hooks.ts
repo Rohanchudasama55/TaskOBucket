@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { organizationService } from '../../services/organizationService';
-import type { CreateOrganizationRequest } from '../../types/organization';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { organizationService } from "../../services/organizationService";
+import type { CreateOrganizationRequest } from "../../types/organization";
 
 export interface CreateOrganizationFormData {
   name: string;
@@ -23,11 +23,11 @@ export interface UseCreateOrganizationReturn {
 export function useCreateOrganization(): UseCreateOrganizationReturn {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<CreateOrganizationFormData>({
-    name: '',
-    organization_key: ''
+    name: "",
+    organization_key: "",
   });
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   // Auto-generate organization key from name
@@ -35,83 +35,87 @@ export function useCreateOrganization(): UseCreateOrganizationReturn {
     const generateKey = (name: string) => {
       return name
         .toLowerCase()
-        .replace(/[^a-z0-9\s]/g, '')
-        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9\s]/g, "")
+        .replace(/\s+/g, "-")
         .substring(0, 20);
     };
-    
+
     if (formData.name) {
-      setFormData(prev => ({ ...prev, organization_key: generateKey(formData.name) }));
+      setFormData((prev) => ({
+        ...prev,
+        organization_key: generateKey(formData.name),
+      }));
     } else {
-      setFormData(prev => ({ ...prev, organization_key: '' }));
+      setFormData((prev) => ({ ...prev, organization_key: "" }));
     }
   }, [formData.name]);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({ ...prev, name: e.target.value }));
-    if (error) setError(''); // Clear error when user starts typing
-    if (success) setSuccess(''); // Clear success when user starts typing
+    setFormData((prev) => ({ ...prev, name: e.target.value }));
+    if (error) setError(""); // Clear error when user starts typing
+    if (success) setSuccess(""); // Clear success when user starts typing
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
     setIsLoading(true);
-    
-    console.log('Create organization form submitted with:', formData);
-    
+
+    console.log("Create organization form submitted with:", formData);
+
     // Basic validation
     if (!formData.name.trim()) {
-      setError('Organization name is required');
+      setError("Organization name is required");
       setIsLoading(false);
       return;
     }
 
     if (!formData.organization_key.trim()) {
-      setError('Organization key could not be generated');
+      setError("Organization key could not be generated");
       setIsLoading(false);
       return;
     }
 
     try {
-      console.log('Creating organization...');
+      console.log("Creating organization...");
       const requestData: CreateOrganizationRequest = {
         name: formData.name.trim(),
-        organization_key: formData.organization_key.trim()
+        organization_key: formData.organization_key.trim(),
       };
-      
+
       const result = await organizationService.create(requestData);
-      console.log('Organization created successfully:', result);
-      
+      console.log("Organization created successfully:", result);
+
       setSuccess(`Organization "${formData.name}" created successfully!`);
-      
-      // Navigate to projects page after successful creation
+
+      // Move the new user to profile completion next
       setTimeout(() => {
-        navigate('/projects');
-      }, 1500); // Shorter delay to show success message briefly before redirect
-      
+        navigate("/auth/user");
+      }, 1500); // Short delay to show success message before redirect
     } catch (err: any) {
-      console.error('Create organization error:', err);
-      setError(err.message || 'Failed to create organization. Please try again.');
+      console.error("Create organization error:", err);
+      setError(
+        err.message || "Failed to create organization. Please try again.",
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
   const clearMessages = () => {
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
   };
 
   const resetForm = () => {
-    setFormData({ name: '', organization_key: '' });
+    setFormData({ name: "", organization_key: "" });
     clearMessages();
   };
 
-  const previewUrl = formData.organization_key 
-    ? `taskobucket.com/${formData.organization_key}` 
-    : 'taskobucket.com/your-org';
+  const previewUrl = formData.organization_key
+    ? `taskobucket.com/${formData.organization_key}`
+    : "taskobucket.com/your-org";
 
   return {
     formData,
@@ -122,6 +126,6 @@ export function useCreateOrganization(): UseCreateOrganizationReturn {
     handleSubmit,
     clearMessages,
     resetForm,
-    previewUrl
+    previewUrl,
   };
 }
